@@ -61,10 +61,13 @@ async function loginUser(name,pw){
 }
 function logoutUser(){localStorage.removeItem(SESSION_KEY)}
 
-/* vẽ khu tài khoản trên nav (mọi trang) */
+/* vẽ khu tài khoản trên nav (mọi trang) + đổi tên thương hiệu theo phiên */
 function renderNavUser(){
   const el=$('navUser');if(!el)return;
   const u=sessionUser();
+  /* khi có tài khoản: góc trái thành "<tên>'s Schedule" thay cho "Táo Vàng" */
+  const brand=document.querySelector('.nav__brandName');
+  if(brand)brand.textContent=u?u+"'s Schedule":'Táo Vàng';
   el.innerHTML=u
     ?`<a class="nav__me" href="taikhoan.html" title="Tài khoản của ${esc(u)}">
         <span class="nav__meAva" aria-hidden="true">${esc(u[0].toUpperCase())}</span>${esc(u)}</a>`
