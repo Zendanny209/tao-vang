@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -84,7 +84,7 @@
     <span class="nav__logo" aria-hidden="true">
       <svg width="16" height="16" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
     </span>
-    Táo Vàng
+    <span class="nav__brandName">Táo Vàng</span>
   </a>
   <div class="nav__right">
     <div class="nav__links">
@@ -106,27 +106,6 @@
   <i class="speck" style="--x:12%;--y:66%;--d:2s" aria-hidden="true"></i>
   <i class="speck" style="--x:47%;--y:76%;--d:2.8s" aria-hidden="true"></i>
   <i class="speck" style="--x:91%;--y:60%;--d:1.7s" aria-hidden="true"></i>
-
-  <!-- [ẢNH LÁ] cành lá + táo: muốn dùng ảnh thật, thay <svg class="hero__branchSvg"> dưới bằng
-       <img src="img/leaf.png" alt=""> (PNG trong suốt, cao ~320px, gồm cả cành + táo) -->
-  <div class="hero__branch" aria-hidden="true">
-    <svg class="hero__branchSvg" viewBox="0 0 480 330">
-      <g filter="url(#barkRough)">
-        <path d="M-10 56 C 90 30, 220 46, 340 14" stroke="url(#barkGrad)" stroke-width="11" fill="none" stroke-linecap="round"/>
-        <path d="M-10 52 C 90 27, 210 41, 330 12" stroke="#a8834f" stroke-width="2.5" fill="none" opacity=".4" stroke-linecap="round"/>
-        <path d="M150 44 C 196 52, 236 68, 268 62" stroke="url(#barkGrad)" stroke-width="5" fill="none" stroke-linecap="round"/>
-      </g>
-      <ellipse cx="120" cy="38" rx="5" ry="3" fill="#43301a" opacity=".65" transform="rotate(-8 120 38)"/>
-      <g transform="translate(64,44) rotate(-38)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
-      <g transform="translate(128,34) rotate(-12)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
-      <g transform="translate(176,40) rotate(24)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
-      <g transform="translate(236,28) rotate(-6)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
-      <g transform="translate(318,16) rotate(14)"><path d="M0 0 C 9 -22, 30 -29, 46 -19 C 36 -4, 14 5, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 18 -10, 30 -16, 40 -18" stroke="#3c5f28" stroke-width="1.3" fill="none" opacity=".7"/></g>
-      <path d="M289 26 C 291 60, 287 92, 289 116" stroke="#4a3f10" stroke-width="2.2" fill="none"/>
-      <ellipse cx="285" cy="226" rx="36" ry="7" fill="#1c1a17" opacity=".08" filter="url(#soft)"/>
-      <g transform="translate(216,100) scale(2.15)"><use href="#appleShape"/></g>
-    </svg>
-  </div>
 
   <div class="hero__text">
     <p class="kicker">Tạp chí thời gian học tập — số 10 · 2026</p>
@@ -259,7 +238,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="script.js?v=4" defer></script>
+<script src="script.js?v=5" defer></script>
 <script src="landing.js?v=4" defer></script>
 </body>
 </html>
