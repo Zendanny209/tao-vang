@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thời khóa biểu — Táo Vàng</title>
+<meta name="description" content="Buổi sáng học trên trường, buổi chiều (13:30–18:30) và buổi tối (19:00–1g sáng) bạn tự xếp lớp học thêm, tự học và việc bận — từng mục một.">
+<meta name="theme-color" content="#c9dcef">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z' fill='%23c9a227'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="appleGrad" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#fbeaa4"/><stop offset="26%" stop-color="#eec24d"/>
+      <stop offset="60%" stop-color="#c8991e"/><stop offset="100%" stop-color="#7a5a0e"/>
+    </radialGradient>
+    <radialGradient id="appleShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="barkGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a6537"/><stop offset="55%" stop-color="#5f4223"/><stop offset="100%" stop-color="#3c2a14"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8db464"/><stop offset="100%" stop-color="#486f2f"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="fCloudsFar" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="4" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.62"/>
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <filter id="fCloudsNear" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0055 0.013" numOctaves="5" seed="4" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.1 -0.72"/>
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+    <g id="appleShape">
+      <path d="M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z" fill="url(#appleGrad)"/>
+      <ellipse cx="24" cy="27" rx="6.5" ry="9.5" fill="url(#appleShine)" transform="rotate(-18 24 27)"/>
+      <path d="M18 44c4.5 4.2 10.4 6.4 14.5 6.5" stroke="#f4d87e" stroke-width="2" opacity=".45" fill="none" stroke-linecap="round"/>
+      <path d="M26 17.6c2.2-1.5 9.8-1.5 12 0" stroke="#7a5a10" stroke-width="2" opacity=".5" fill="none" stroke-linecap="round"/>
+      <path d="M32 17.4c-.4-5.2 1.8-8.2 5.8-10.2" stroke="#5c4322" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <path d="M38.5 8.2c4.6-2.4 9-1.3 10 .5-2.8 2.5-7.2 2.9-10-.5z" fill="url(#leafGrad)"/>
+    </g>
+  </defs>
+</svg>
+
+<noscript>
+  <p style="max-width:640px;margin:20px auto;padding:16px 22px;border:1px solid #c9a227;border-radius:16px;background:#faf8f4;color:#1c1a17;font-family:Tahoma,sans-serif">
+    Trang này cần JavaScript để lưu thời khóa biểu. Bạn hãy bật JavaScript rồi tải lại nhé!
+  </p>
+</noscript>
+
+<div class="sky" aria-hidden="true"></div>
+<div class="clouds clouds--far" aria-hidden="true"></div>
+<div class="clouds clouds--near" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Điều hướng chính">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__logo" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    </span>
+    Táo Vàng
+  </a>
+  <div class="nav__right">
+    <div class="nav__links">
+      <a href="thoikhoabieu.html" class="active">Thời khóa biểu</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="ghichu.html">Ghi chú</a>
+    </div>
+    <div class="nav__user" id="navUser"></div>
+  </div>
+</nav>
+
+<!-- ================= ĐẦU TRANG ================= -->
+<header class="page-head">
+  <p class="kicker">Mục 01 — Thời khóa biểu</p>
+  <h1>Sáng trên trường,<br>chiều &amp; tối <em class="script">thuộc về bạn</em></h1>
+  <p class="page-sub">Buổi sáng bạn nhập từng tiết học trên trường. Buổi chiều (13:30–18:30) và buổi tối (19:00–1g sáng hôm sau) — bạn tự xếp lớp học thêm, tự học và việc bận, từng mục một; mỗi mục một thẻ giờ gọn gàng.</p>
+  <!-- [ẢNH LÁ] nhành lá trang trí góc đầu trang: thay bằng <img src="img/leaf.png" alt="" style="height:120px"> -->
+  <svg class="deco" width="120" height="64" viewBox="0 0 120 64" aria-hidden="true">
+    <path d="M-4 10 C 30 6, 70 12, 118 2" stroke="url(#barkGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <g transform="translate(34,10) rotate(28)"><path d="M0 0 C 6 -16, 21 -21, 32 -14 C 25 -3, 10 4, 0 0 Z" fill="url(#leafGrad)"/></g>
+    <g transform="translate(72,8) rotate(12)"><path d="M0 0 C 6 -16, 21 -21, 32 -14 C 25 -3, 10 4, 0 0 Z" fill="url(#leafGrad)"/></g>
+    <path d="M78 6 C 80 18, 78 26, 79 34" stroke="#4a3f10" stroke-width="1.8" fill="none"/>
+    <g transform="translate(66,34) scale(.62)"><use href="#appleShape"/></g>
+  </svg>
+</header>
+
+<main>
+
+  <!-- ================= PHẦN 1 — BUỔI SÁNG ================= -->
+  <section class="section" id="phan-sang">
+    <header class="sec-head reveal">
+      <p class="kicker">Phần 1 — Buổi sáng</p>
+      <h2>Học trên trường, <em class="script">từng tiết một</em></h2>
+    </header>
+    <div class="week" id="schoolGrid"></div>
+    <p class="fineprint fineprint--legend reveal">
+      <span><i class="dot"></i>tiết học buổi sáng</span>
+      — chủ nhật không học chính. Chia nhỏ thành nhiều tiết tùy bạn.
+    </p>
+    <div class="split" style="margin-top:34px">
+      <div class="split__text reveal">
+        <p>Mỗi tiết là một mục riêng: chọn thứ, môn học, giờ bắt đầu — kết thúc. Muốn chia buổi sáng thành nhiều tiết thì cứ thêm nhiều mục.</p>
+        <button class="pill" id="btnAddSchool" type="button">Thêm tiết buổi sáng</button>
+      </div>
+      <ul class="classlist glass reveal" id="schoolList"></ul>
+    </div>
+  </section>
+
+  <!-- ================= PHẦN 2 — BUỔI CHIỀU ================= -->
+  <section class="section" id="phan-chieu">
+    <header class="sec-head reveal">
+      <p class="kicker">Phần 2 — Buổi chiều · 13:30 – 18:30</p>
+      <h2>Chiều về, <em class="script">gì cũng xếp được</em></h2>
+    </header>
+    <div class="week week--self" id="chieuGrid"></div>
+    <p class="fineprint fineprint--legend reveal">
+      <span><i class="dot dot--self"></i>tự học</span>
+      <span><i class="dot dot--extra"></i>học thêm</span>
+      <span><i class="dot dot--busy"></i>việc bận</span>
+      — <b id="chieuTotal"></b> học mỗi tuần trong buổi chiều.
+    </p>
+    <div class="split" style="margin-top:34px">
+      <div class="split__text reveal">
+        <p>Tự xếp cho mình: tự học một môn, lớp học thêm, hay việc bận (tắm rửa, ăn uống, đón em…). Buổi nào dài buổi nào ngắn là quyền của bạn.</p>
+        <div class="split__btns">
+          <button class="pill" id="btnAddChieu" type="button">Thêm mục buổi chiều</button>
+        </div>
+      </div>
+      <ul class="classlist glass reveal" id="chieuList"></ul>
+    </div>
+  </section>
+
+  <!-- ================= PHẦN 3 — BUỔI TỐI ================= -->
+  <section class="section" id="phan-toi">
+    <header class="sec-head reveal">
+      <p class="kicker">Phần 3 — Buổi tối · 19:00 – 1g sáng</p>
+      <h2>Đêm khuya, <em class="script">táo chín săn</em></h2>
+    </header>
+    <div class="week week--self" id="toiGrid"></div>
+    <p class="fineprint fineprint--legend reveal">
+      <span><i class="dot dot--self"></i>tự học</span>
+      <span><i class="dot dot--extra"></i>học thêm</span>
+      <span><i class="dot dot--busy"></i>việc bận</span>
+      — <b id="toiTotal"></b> học mỗi tuần trong buổi tối. Muốn học tới 1g sáng: cứ nhập giờ kết thúc 01:00.
+    </p>
+    <div class="split" style="margin-top:34px">
+      <div class="split__text reveal">
+        <p>Buổi tối dài đến 1g sáng hôm sau — nhập giờ qua nửa đêm bình thường (ví dụ 23:00 → 01:00), thẻ giờ sẽ hiển thị đúng.</p>
+        <div class="split__btns">
+          <button class="pill" id="btnAddToi" type="button">Thêm mục buổi tối</button>
+        </div>
+      </div>
+      <ul class="classlist glass reveal" id="toiList"></ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer" id="footer">
+  <p class="kicker reveal">Nhật ký &amp; dữ liệu</p>
+  <h2 class="footer__title reveal">Lịch mình tự xếp —<br>táo <em class="script">ngọt gấp đôi</em>.</h2>
+  <p class="footer__sub">Dữ liệu lưu trong máy bạn, gắn với tài khoản đang đăng nhập — không server, không theo dõi.</p>
+  <p class="footer__giant">( Sáng · Chiều · Tối — đều tăm tắp )</p>
+  <div class="footer__apples" aria-hidden="true">
+    <svg class="fapple" width="58" height="58" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="84" height="84" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="66" height="66" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="94" height="94" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="60" height="60" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="78" height="78" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="64" height="64" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+  </div>
+  <div class="footer__meta">
+    <span>© 2026 Táo Vàng — nhật ký học tập phong cách surreal · làm với localStorage &amp; một quả táo</span>
+    <span class="footer__links">
+      <a class="linklike" href="index.html">Về trang chính</a> ·
+      <button class="linklike" id="btnReset" type="button">Reset dữ liệu</button>
+    </span>
+  </div>
+</footer>
+
+<!-- ================= MODAL: FORM CHUNG =================
+     kind = school (tiết sáng) | self | extra | busy (chiều/tối) -->
+<div class="overlay" id="modalForm" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+    <h3 id="formTitle">Thêm mục</h3>
+    <form id="entryForm" novalidate>
+      <div class="frow" id="fKindRow">
+        <label>Loại
+          <select id="fKind">
+            <option value="self">Tự học</option>
+            <option value="extra">Học thêm</option>
+            <option value="busy">Việc bận</option>
+          </select>
+        </label>
+        <label>Thứ
+          <select id="fDay">
+            <option value="1">Thứ 2</option><option value="2">Thứ 3</option>
+            <option value="3">Thứ 4</option><option value="4">Thứ 5</option>
+            <option value="5">Thứ 6</option><option value="6">Thứ 7</option>
+            <option value="0">Chủ nhật</option>
+          </select>
+        </label>
+      </div>
+      <label class="field" id="fSubjectSelWrap" hidden>Môn
+        <select id="fSubject"></select>
+      </label>
+      <label class="field" id="fSubjectTextWrap" hidden>Môn học
+        <input type="text" id="fSubjectText" list="subjectSuggestions" maxlength="40" placeholder="VD: Toán, Ngữ văn, Hóa…">
+      </label>
+      <label class="field" id="fLabelWrap" hidden>Việc gì
+        <input type="text" id="fLabel" maxlength="40" placeholder="VD: Tắm rửa, giặt đồ, đi đón em…">
+      </label>
+      <div class="frow">
+        <label>Bắt đầu <input type="time" id="fStart" required></label>
+        <label>Kết thúc <input type="time" id="fEnd" required></label>
+      </div>
+      <label class="field" id="fNoteWrap" hidden>Ghi chú (thầy/cô, phòng học…)
+        <input type="text" id="fNote" maxlength="60" placeholder="VD: Thầy Minh · phòng 12">
+      </label>
+      <p class="form-err" id="formError" role="alert"></p>
+      <div class="modal__btns">
+        <button type="button" class="pill pill--ghost" data-close="modalForm">Hủy</button>
+        <button type="submit" class="pill">Lưu</button>
+      </div>
+    </form>
+    <datalist id="subjectSuggestions">
+      <option value="Toán"></option><option value="Vật lý"></option>
+      <option value="Hóa học"></option><option value="Tiếng Anh"></option>
+      <option value="Học trên trường"></option>
+    </datalist>
+  </div>
+</div>
+
+<!-- ================= MODAL: XÁC NHẬN ================= -->
+<div class="overlay" id="modalConfirm" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Xác nhận nhé</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal__btns">
+      <button class="pill pill--ghost" id="btnNo" type="button">Để thôi</button>
+      <button class="pill" id="btnYes" type="button">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: THÔNG BÁO ================= -->
+<div class="overlay" id="modalMsg" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="msgTitle">
+    <h3 id="msgTitle">Có một việc nhỏ</h3>
+    <p id="msgText"></p>
+    <div class="modal__btns"><button class="pill" data-close="modalMsg" type="button">Đã hiểu</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js?v=4" defer></script>
+<script src="lich.js?v=5" defer></script>
+</body>
+</html>
