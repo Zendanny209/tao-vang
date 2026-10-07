@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tài khoản — Táo Vàng</title>
+<meta name="description" content="Tạo tài khoản và đăng nhập để giữ lịch trình riêng của bạn — mọi thứ lưu trong máy, mật khẩu được băm SHA-256.">
+<meta name="theme-color" content="#c9dcef">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z' fill='%23c9a227'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="appleGrad" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#fbeaa4"/><stop offset="26%" stop-color="#eec24d"/>
+      <stop offset="60%" stop-color="#c8991e"/><stop offset="100%" stop-color="#7a5a0e"/>
+    </radialGradient>
+    <radialGradient id="appleShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8db464"/><stop offset="100%" stop-color="#486f2f"/>
+    </linearGradient>
+    <filter id="fCloudsFar" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="4" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.62"/>
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <filter id="fCloudsNear" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0055 0.013" numOctaves="5" seed="4" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.1 -0.72"/>
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+    <g id="appleShape">
+      <path d="M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z" fill="url(#appleGrad)"/>
+      <ellipse cx="24" cy="27" rx="6.5" ry="9.5" fill="url(#appleShine)" transform="rotate(-18 24 27)"/>
+      <path d="M32 17.4c-.4-5.2 1.8-8.2 5.8-10.2" stroke="#5c4322" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <path d="M38.5 8.2c4.6-2.4 9-1.3 10 .5-2.8 2.5-7.2 2.9-10-.5z" fill="url(#leafGrad)"/>
+    </g>
+  </defs>
+</svg>
+
+<noscript>
+  <p style="max-width:640px;margin:20px auto;padding:16px 22px;border:1px solid #c9a227;border-radius:16px;background:#faf8f4;color:#1c1a17;font-family:Tahoma,sans-serif">
+    Trang này cần JavaScript để đăng nhập. Bạn hãy bật JavaScript rồi tải lại nhé!
+  </p>
+</noscript>
+
+<div class="sky" aria-hidden="true"></div>
+<div class="clouds clouds--far" aria-hidden="true"></div>
+<div class="clouds clouds--near" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Điều hướng chính">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__logo" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    </span>
+    Táo Vàng
+  </a>
+  <div class="nav__right">
+    <div class="nav__links">
+      <a href="thoikhoabieu.html">Thời khóa biểu</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="ghichu.html">Ghi chú</a>
+    </div>
+    <div class="nav__user" id="navUser"></div>
+  </div>
+</nav>
+
+<!-- ================= ĐẦU TRANG ================= -->
+<header class="page-head">
+  <p class="kicker">Tài khoản của bạn</p>
+  <h1>Mỗi người một giỏ <em class="script">táo riêng</em></h1>
+  <p class="page-sub">Tạo tài khoản để giữ lịch trình, ghi chú và Pomodoro riêng của bạn. Tài khoản nằm ngay trong máy này — mật khẩu được băm SHA-256 kèm salt ngẫu nhiên, không gửi đi bất cứ đâu.</p>
+  <svg class="deco" width="46" height="46" viewBox="0 0 64 64" aria-hidden="true"><use href="#appleShape"/></svg>
+</header>
+
+<main>
+  <section class="section" id="taikhoan" style="padding-top:34px">
+    <div class="glass auth__card auth reveal" id="authGuest">
+      <div class="auth__tabs" role="tablist">
+        <button class="auth__tab active" id="tabLogin" type="button">Đăng nhập</button>
+        <button class="auth__tab" id="tabRegister" type="button">Tạo tài khoản</button>
+      </div>
+
+      <form id="formLogin" novalidate>
+        <label class="field">Tên đăng nhập
+          <input type="text" id="liName" maxlength="20" autocomplete="username" placeholder="VD: maiha">
+        </label>
+        <label class="field">Mật khẩu
+          <input type="password" id="liPw" maxlength="60" autocomplete="current-password" placeholder="••••••••">
+        </label>
+        <p class="form-err" id="liErr" role="alert"></p>
+        <div class="modal__btns" style="justify-content:flex-start">
+          <button class="pill" type="submit">Đăng nhập</button>
+          <a class="pill pill--ghost" href="index.html">Xem như khách</a>
+        </div>
+      </form>
+
+      <form id="formRegister" hidden novalidate>
+        <label class="field">Tên đăng nhập (3–20 ký tự)
+          <input type="text" id="rgName" maxlength="20" autocomplete="username" placeholder="VD: maiha">
+        </label>
+        <label class="field">Mật khẩu (từ 4 ký tự)
+          <input type="password" id="rgPw" maxlength="60" autocomplete="new-password" placeholder="••••••••">
+        </label>
+        <label class="field">Nhập lại mật khẩu
+          <input type="password" id="rgPw2" maxlength="60" autocomplete="new-password" placeholder="••••••••">
+        </label>
+        <p class="form-err" id="rgErr" role="alert"></p>
+        <div class="modal__btns" style="justify-content:flex-start">
+          <button class="pill" type="submit">Tạo tài khoản</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="glass auth__card auth reveal" id="authMe" hidden>
+      <p class="auth__hello">Xin chào, <em class="script" id="meName"></em> <span aria-hidden="true">🍎</span></p>
+      <p class="auth__meta">Bạn đang dùng lịch trình của riêng mình — mọi thay đổi ở Thời khóa biểu, Pomodoro và Ghi chú đều lưu vào tài khoản này.</p>
+      <p class="auth__meta" id="meSince"></p>
+      <div class="auth__btns">
+        <a class="pill" href="index.html">Về trang chính</a>
+        <button class="pill pill--ghost" id="btnLogout" type="button">Đăng xuất</button>
+        <button class="linklike" id="btnDelMe" type="button">Xóa tài khoản này</button>
+      </div>
+    </div>
+
+    <p class="fineprint reveal" style="max-width:470px">
+      Lưu ý nhỏ: tài khoản chỉ tồn tại trong trình duyệt của máy này (localStorage) — không phải hệ thống máy chủ,
+      nên đừng dùng mật khẩu quan trọng của bạn ở đây. Xóa dữ liệu trình duyệt đồng nghĩa với mất tài khoản.
+    </p>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer" id="footer">
+  <p class="kicker reveal">Nhật ký &amp; dữ liệu</p>
+  <h2 class="footer__title reveal">Một tài khoản —<br>một <em class="script">giỏ táo</em> riêng.</h2>
+  <p class="footer__sub">Mật khẩu băm SHA-256 + salt ngẫu nhiên, nằm trong máy bạn.</p>
+  <p class="footer__giant">( Của bạn · Giữ cho bạn )</p>
+  <div class="footer__apples" aria-hidden="true">
+    <svg class="fapple" width="58" height="58" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="84" height="84" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="66" height="66" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="94" height="94" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="60" height="60" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="78" height="78" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="64" height="64" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+  </div>
+  <div class="footer__meta">
+    <span>© 2026 Táo Vàng — nhật ký học tập phong cách surreal · làm với localStorage &amp; một quả táo</span>
+    <span class="footer__links">
+      <a class="linklike" href="index.html">Về trang chính</a> ·
+      <button class="linklike" id="btnReset" type="button">Reset dữ liệu</button>
+    </span>
+  </div>
+</footer>
+
+<!-- ================= MODAL: XÁC NHẬN ================= -->
+<div class="overlay" id="modalConfirm" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Xác nhận nhé</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal__btns">
+      <button class="pill pill--ghost" id="btnNo" type="button">Để thôi</button>
+      <button class="pill" id="btnYes" type="button">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: THÔNG BÁO ================= -->
+<div class="overlay" id="modalMsg" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="msgTitle">
+    <h3 id="msgTitle">Có một việc nhỏ</h3>
+    <p id="msgText"></p>
+    <div class="modal__btns"><button class="pill" data-close="modalMsg" type="button">Đã hiểu</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js?v=4" defer></script>
+<script src="taikhoan.js?v=4" defer></script>
+</body>
+</html>
