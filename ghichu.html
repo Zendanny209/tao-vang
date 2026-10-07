@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghi chú — Táo Vàng</title>
+<meta name="description" content="Bảng ghi chú sticky vàng trên thuỷ tinh: bấm một cái để hoàn thành, ✕ để gỡ — lưu ngay trong máy bạn, gắn với tài khoản.">
+<meta name="theme-color" content="#c9dcef">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z' fill='%23c9a227'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="appleGrad" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#fbeaa4"/><stop offset="26%" stop-color="#eec24d"/>
+      <stop offset="60%" stop-color="#c8991e"/><stop offset="100%" stop-color="#7a5a0e"/>
+    </radialGradient>
+    <radialGradient id="appleShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="barkGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a6537"/><stop offset="55%" stop-color="#5f4223"/><stop offset="100%" stop-color="#3c2a14"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8db464"/><stop offset="100%" stop-color="#486f2f"/>
+    </linearGradient>
+    <filter id="fCloudsFar" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="4" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.62"/>
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <filter id="fCloudsNear" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0055 0.013" numOctaves="5" seed="4" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.1 -0.72"/>
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+    <g id="appleShape">
+      <path d="M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z" fill="url(#appleGrad)"/>
+      <ellipse cx="24" cy="27" rx="6.5" ry="9.5" fill="url(#appleShine)" transform="rotate(-18 24 27)"/>
+      <path d="M32 17.4c-.4-5.2 1.8-8.2 5.8-10.2" stroke="#5c4322" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <path d="M38.5 8.2c4.6-2.4 9-1.3 10 .5-2.8 2.5-7.2 2.9-10-.5z" fill="url(#leafGrad)"/>
+    </g>
+  </defs>
+</svg>
+
+<noscript>
+  <p style="max-width:640px;margin:20px auto;padding:16px 22px;border:1px solid #c9a227;border-radius:16px;background:#faf8f4;color:#1c1a17;font-family:Tahoma,sans-serif">
+    Trang này cần JavaScript để lưu ghi chú. Bạn hãy bật JavaScript rồi tải lại nhé!
+  </p>
+</noscript>
+
+<div class="sky" aria-hidden="true"></div>
+<div class="clouds clouds--far" aria-hidden="true"></div>
+<div class="clouds clouds--near" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Điều hướng chính">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__logo" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    </span>
+    Táo Vàng
+  </a>
+  <div class="nav__right">
+    <div class="nav__links">
+      <a href="thoikhoabieu.html">Thời khóa biểu</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="ghichu.html" class="active">Ghi chú</a>
+    </div>
+    <div class="nav__user" id="navUser"></div>
+  </div>
+</nav>
+
+<!-- ================= ĐẦU TRANG ================= -->
+<header class="page-head">
+  <p class="kicker">Mục 03 — Ghi chú</p>
+  <h1>Bạn nghĩ <em class="script">nhớ hết</em><br>là <em class="script">dễ</em>?</h1>
+  <p class="page-sub">Để những tờ note vàng này lo: viết việc cần làm, dán lên bảng — bấm vào tờ note là hoàn thành, bấm ✕ để gỡ.</p>
+  <!-- [ẢNH LÁ] nhành lá trang trí góc đầu trang: thay bằng <img src="img/leaf.png" alt="" style="height:120px"> -->
+  <svg class="deco" width="120" height="64" viewBox="0 0 120 64" aria-hidden="true">
+    <path d="M-4 10 C 30 6, 70 12, 118 2" stroke="url(#barkGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <g transform="translate(34,10) rotate(28)"><path d="M0 0 C 6 -16, 21 -21, 32 -14 C 25 -3, 10 4, 0 0 Z" fill="url(#leafGrad)"/></g>
+    <g transform="translate(72,8) rotate(12)"><path d="M0 0 C 6 -16, 21 -21, 32 -14 C 25 -3, 10 4, 0 0 Z" fill="url(#leafGrad)"/></g>
+    <path d="M78 6 C 80 18, 78 26, 79 34" stroke="#4a3f10" stroke-width="1.8" fill="none"/>
+    <g transform="translate(66,34) scale(.62)"><use href="#appleShape"/></g>
+  </svg>
+</header>
+
+<main>
+  <section class="section" id="todo">
+    <div class="glass board reveal">
+      <!-- băng dính washi góc bảng -->
+      <span class="tape" style="left:26px;top:-10px;transform:rotate(-8deg)" aria-hidden="true"></span>
+      <span class="tape" style="right:30px;top:-10px;transform:rotate(6deg)" aria-hidden="true"></span>
+      <form class="note note--form" id="noteForm">
+        <input type="text" id="noteInput" maxlength="90" placeholder="Viết một việc cần làm…" aria-label="Việc cần làm">
+        <button class="pill pill--small" type="submit">Dán lên</button>
+      </form>
+      <div id="noteWall"></div>
+    </div>
+    <p class="fineprint fineprint--legend reveal" style="margin-top:24px">
+      Mỗi tờ note có màu vàng và độ nghiêng riêng — lưu trong máy bạn, gắn với tài khoản đang đăng nhập, tải lại trang không mất.
+    </p>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer" id="footer">
+  <p class="kicker reveal">Nhật ký &amp; dữ liệu</p>
+  <h2 class="footer__title reveal">Việc nào dán ra —<br>việc đó <em class="script">không lạc</em>.</h2>
+  <p class="footer__sub">Toàn bộ dữ liệu nằm ngay trong máy bạn (localStorage) — không server, không theo dõi, không quảng cáo.</p>
+  <p class="footer__giant">( Dán lên · Làm xong · Gỡ ra )</p>
+  <div class="footer__apples" aria-hidden="true">
+    <svg class="fapple" width="58" height="58" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="84" height="84" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="66" height="66" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="94" height="94" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="60" height="60" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="78" height="78" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="64" height="64" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+  </div>
+  <div class="footer__meta">
+    <span>© 2026 Táo Vàng — nhật ký học tập phong cách surreal · làm với localStorage &amp; một quả táo</span>
+    <span class="footer__links">
+      <a class="linklike" href="index.html">Về trang chính</a> ·
+      <button class="linklike" id="btnReset" type="button">Reset dữ liệu</button>
+    </span>
+  </div>
+</footer>
+
+<!-- ================= MODAL: XÁC NHẬN ================= -->
+<div class="overlay" id="modalConfirm" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Xác nhận nhé</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal__btns">
+      <button class="pill pill--ghost" id="btnNo" type="button">Để thôi</button>
+      <button class="pill" id="btnYes" type="button">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: THÔNG BÁO ================= -->
+<div class="overlay" id="modalMsg" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="msgTitle">
+    <h3 id="msgTitle">Có một việc nhỏ</h3>
+    <p id="msgText"></p>
+    <div class="modal__btns"><button class="pill" data-close="modalMsg" type="button">Đã hiểu</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js?v=4" defer></script>
+<script src="ghichu.js?v=4" defer></script>
+</body>
+</html>
