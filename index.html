@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Táo Vàng — nhật ký học tập</title>
+<meta name="description" content="Nhật ký học tập phong cách tạp chí: buổi sáng học trên trường, buổi chiều (13:30–18:30) và buổi tối (19:00–01:00) bạn tự xếp lịch — tài khoản riêng, Pomodoro vườn đêm nở hoa và ghi chú sticky.">
+<meta name="theme-color" content="#c9dcef">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z' fill='%23c9a227'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+<!-- Kho hình & filter dùng chung mọi trang: táo vàng, vân cây, mây nhiễu fractal -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="appleGrad" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#fbeaa4"/>
+      <stop offset="26%" stop-color="#eec24d"/>
+      <stop offset="60%" stop-color="#c8991e"/>
+      <stop offset="100%" stop-color="#7a5a0e"/>
+    </radialGradient>
+    <radialGradient id="appleShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="barkGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a6537"/>
+      <stop offset="55%" stop-color="#5f4223"/>
+      <stop offset="100%" stop-color="#3c2a14"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8db464"/>
+      <stop offset="100%" stop-color="#486f2f"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <!-- vân cây: lệch nhẹ đường vẽ bằng nhiễu → cành trông tự nhiên hơn -->
+    <filter id="barkRough" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.11 0.07" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4"/>
+    </filter>
+    <!-- mây: nhiễu fractal → đốm trắng mềm, dùng cho 2 tầng .clouds -->
+    <filter id="fCloudsFar" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="4" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.62"/>
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <filter id="fCloudsNear" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0055 0.013" numOctaves="5" seed="4" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.1 -0.72"/>
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+    <!-- [ẢNH TÁO] muốn tả thực bằng ảnh: thay <use href="#appleShape"> ở nơi cần
+         bằng <img src="img/apple.png" alt="" width="120"> (PNG trong suốt) -->
+    <g id="appleShape">
+      <path d="M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z" fill="url(#appleGrad)"/>
+      <ellipse cx="24" cy="27" rx="6.5" ry="9.5" fill="url(#appleShine)" transform="rotate(-18 24 27)"/>
+      <path d="M18 44c4.5 4.2 10.4 6.4 14.5 6.5" stroke="#f4d87e" stroke-width="2" opacity=".45" fill="none" stroke-linecap="round"/>
+      <path d="M26 17.6c2.2-1.5 9.8-1.5 12 0" stroke="#7a5a10" stroke-width="2" opacity=".5" fill="none" stroke-linecap="round"/>
+      <path d="M32 17.4c-.4-5.2 1.8-8.2 5.8-10.2" stroke="#5c4322" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <path d="M38.5 8.2c4.6-2.4 9-1.3 10 .5-2.8 2.5-7.2 2.9-10-.5z" fill="url(#leafGrad)"/>
+    </g>
+  </defs>
+</svg>
+
+<noscript>
+  <p style="max-width:640px;margin:20px auto;padding:16px 22px;border:1px solid #c9a227;border-radius:16px;background:#faf8f4;color:#1c1a17;font-family:Tahoma,sans-serif">
+    Trang này cần JavaScript để tự sinh lịch tự học và chạy Pomodoro. Bạn hãy bật JavaScript rồi tải lại nhé!
+  </p>
+</noscript>
+
+<div class="sky" aria-hidden="true"></div>
+<div class="clouds clouds--far" aria-hidden="true"></div>
+<div class="clouds clouds--near" aria-hidden="true"></div>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" aria-label="Điều hướng chính">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__logo" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    </span>
+    Táo Vàng
+  </a>
+  <div class="nav__right">
+    <div class="nav__links">
+      <a href="thoikhoabieu.html">Thời khóa biểu</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="ghichu.html">Ghi chú</a>
+    </div>
+    <div class="nav__user" id="navUser"></div>
+  </div>
+</nav>
+
+<!-- ================= HERO — trang bìa tạp chí ================= -->
+<header class="hero" id="top">
+
+  <span class="hero__ghost" aria-hidden="true">Táo vàng</span>
+  <div class="rays" aria-hidden="true"></div>
+  <i class="speck" style="--x:64%;--y:16%;--d:.4s" aria-hidden="true"></i>
+  <i class="speck" style="--x:84%;--y:34%;--d:1.2s" aria-hidden="true"></i>
+  <i class="speck" style="--x:12%;--y:66%;--d:2s" aria-hidden="true"></i>
+  <i class="speck" style="--x:47%;--y:76%;--d:2.8s" aria-hidden="true"></i>
+  <i class="speck" style="--x:91%;--y:60%;--d:1.7s" aria-hidden="true"></i>
+
+  <!-- [ẢNH LÁ] cành lá + táo: muốn dùng ảnh thật, thay <svg class="hero__branchSvg"> dưới bằng
+       <img src="img/leaf.png" alt=""> (PNG trong suốt, cao ~320px, gồm cả cành + táo) -->
+  <div class="hero__branch" aria-hidden="true">
+    <svg class="hero__branchSvg" viewBox="0 0 480 330">
+      <g filter="url(#barkRough)">
+        <path d="M-10 56 C 90 30, 220 46, 340 14" stroke="url(#barkGrad)" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <path d="M-10 52 C 90 27, 210 41, 330 12" stroke="#a8834f" stroke-width="2.5" fill="none" opacity=".4" stroke-linecap="round"/>
+        <path d="M150 44 C 196 52, 236 68, 268 62" stroke="url(#barkGrad)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </g>
+      <ellipse cx="120" cy="38" rx="5" ry="3" fill="#43301a" opacity=".65" transform="rotate(-8 120 38)"/>
+      <g transform="translate(64,44) rotate(-38)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
+      <g transform="translate(128,34) rotate(-12)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
+      <g transform="translate(176,40) rotate(24)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
+      <g transform="translate(236,28) rotate(-6)"><path d="M0 0 C 10 -26, 34 -34, 52 -22 C 40 -4, 16 6, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 20 -12, 34 -18, 46 -20" stroke="#3c5f28" stroke-width="1.4" fill="none" opacity=".7"/></g>
+      <g transform="translate(318,16) rotate(14)"><path d="M0 0 C 9 -22, 30 -29, 46 -19 C 36 -4, 14 5, 0 0 Z" fill="url(#leafGrad)"/><path d="M4 -2 C 18 -10, 30 -16, 40 -18" stroke="#3c5f28" stroke-width="1.3" fill="none" opacity=".7"/></g>
+      <path d="M289 26 C 291 60, 287 92, 289 116" stroke="#4a3f10" stroke-width="2.2" fill="none"/>
+      <ellipse cx="285" cy="226" rx="36" ry="7" fill="#1c1a17" opacity=".08" filter="url(#soft)"/>
+      <g transform="translate(216,100) scale(2.15)"><use href="#appleShape"/></g>
+    </svg>
+  </div>
+
+  <div class="hero__text">
+    <p class="kicker">Tạp chí thời gian học tập — số 10 · 2026</p>
+    <h1 class="hero__title">Biến từng giờ học<br>thành <em class="script">Táo Vàng</em></h1>
+    <p class="hero__lead">Buổi sáng thuộc về lớp học trên trường. Từ <b>13:30 chiều</b> đến <b>1g sáng</b> là của bạn — tự xếp từng môn <b>Toán · Vật lý · Hóa học · Tiếng Anh</b> vào hai buổi, mình giữ chỗ đẹp cho từng giờ.</p>
+    <p class="hero__date"><span id="heroDate"></span> — <em>“Học đều đặn là cách lặng lẽ nhất để vượt lên.”</em></p>
+  </div>
+
+  <div class="hero__side">
+    <aside class="glass hero__card" aria-label="Ước lượng phút học mỗi tuần">
+      <h2 class="hero__cardTitle">Ước lượng tuần này</h2>
+      <div id="heroRows"></div>
+      <div class="wrow wrow--total"><span>Tổng chiều + tối</span><b id="heroTotal"></b></div>
+      <a class="pill pill--white" href="thoikhoabieu.html">Xem thời khóa biểu</a>
+    </aside>
+    <p class="hero__cardCap">Số phút bạn tự xếp mỗi tuần — chỉnh ở mục <a href="thoikhoabieu.html">Thời khóa biểu</a>.</p>
+  </div>
+
+  <a class="pill hero__cta" href="thoikhoabieu.html">Học ngay ▸</a>
+</header>
+
+<main>
+
+  <!-- ================= MỤC LỤC ================= -->
+  <section class="section" id="muc-luc">
+    <header class="sec-head reveal">
+      <p class="kicker">Mục lục</p>
+      <h2>Hôm nay bắt đầu <em class="script">từ đâu?</em></h2>
+    </header>
+    <div class="toc__grid">
+
+      <a class="toc__card glass reveal" href="thoikhoabieu.html">
+        <span class="toc__num">01</span>
+        <h3>Thời khóa biểu</h3>
+        <p>Buổi sáng trên trường; buổi chiều 13:30–18:30 và buổi tối 19:00–1g sáng bạn tự xếp từng môn, từng việc.</p>
+        <span class="toc__go">Mở mục ▸</span>
+        <svg class="toc__art" width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><use href="#appleShape"/></svg>
+      </a>
+
+      <a class="toc__card glass reveal" href="pomodoro.html">
+        <span class="toc__num">02</span>
+        <h3>Pomodoro</h3>
+        <p>Tự chỉnh số phút tập trung. Bấm bắt đầu — một đóa hoa trong vườn đêm sẽ nở dần theo thời gian.</p>
+        <span class="toc__go">Mở mục ▸</span>
+        <svg class="toc__art" width="38" height="38" viewBox="0 0 64 64" aria-hidden="true">
+          <g fill="none" stroke="#c9a227" stroke-width="2">
+            <path d="M32 32 C 24 20, 24 10, 32 4 C 40 10, 40 20, 32 32Z" fill="#eee3c0" opacity=".8"/>
+            <path d="M32 32 C 20 28, 12 20, 12 12 C 22 12, 30 20, 32 32Z" fill="#eee3c0" opacity=".55"/>
+            <path d="M32 32 C 44 28, 52 20, 52 12 C 42 12, 34 20, 32 32Z" fill="#eee3c0" opacity=".55"/>
+          </g>
+          <circle cx="32" cy="33" r="4" fill="#c9a227"/>
+        </svg>
+      </a>
+
+      <a class="toc__card glass reveal" href="ghichu.html">
+        <span class="toc__num">03</span>
+        <h3>Ghi chú</h3>
+        <p>Những tờ note vàng dán trên bảng thuỷ tinh — bấm một cái là xong việc, không việc nào bị bỏ quên.</p>
+        <span class="toc__go">Mở mục ▸</span>
+        <svg class="toc__art" width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="10" width="40" height="42" rx="3" fill="#eee3c0" transform="rotate(-5 32 31)"/>
+          <path d="M20 22l22-2M20 30l22-2M20 38l14-1.5" stroke="#c9a227" stroke-width="2.4" stroke-linecap="round" transform="rotate(-5 32 31)"/>
+        </svg>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer" id="footer">
+  <p class="kicker reveal">Nhật ký &amp; dữ liệu</p>
+  <h2 class="footer__title reveal">Hy vọng lịch này giúp bạn <em class="script">bền bỉ</em> —<br>&amp; đều đặn <em class="script">chín ngọt</em>.</h2>
+  <p class="footer__sub">Toàn bộ dữ liệu nằm ngay trong máy bạn (localStorage) — mỗi tài khoản một lịch riêng; mật khẩu được băm, không rời khỏi máy.</p>
+  <p class="footer__giant">( Học đều · Táo ngọt )</p>
+
+  <!-- [ẢNH TÁO] dải táo vàng chân trang: muốn dùng ảnh thật, thay cả <div class="footer__apples"> bằng
+       <img src="img/apples.png" alt="" style="width:min(92vw,760px)"> (PNG trong suốt, hàng táo ~300px cao) -->
+  <div class="footer__apples" aria-hidden="true">
+    <svg class="fapple" width="58" height="58" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="84" height="84" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="66" height="66" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="94" height="94" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="60" height="60" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="78" height="78" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="64" height="64" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+  </div>
+  <!-- [ẢNH LÁ] góc chân trang (tùy chọn): img/leaf.png cao ~300px, đặt position:absolute hai bên -->
+
+  <div class="footer__meta">
+    <span>© 2026 Táo Vàng — nhật ký học tập phong cách surreal · làm với localStorage &amp; một quả táo</span>
+    <span class="footer__links">
+      <button class="linklike" id="btnHelp" type="button">Hướng dẫn</button> ·
+      <button class="linklike" id="btnReset" type="button">Reset dữ liệu</button>
+    </span>
+  </div>
+</footer>
+
+<!-- ================= MODAL: XÁC NHẬN ================= -->
+<div class="overlay" id="modalConfirm" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Xác nhận nhé</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal__btns">
+      <button class="pill pill--ghost" id="btnNo" type="button">Để thôi</button>
+      <button class="pill" id="btnYes" type="button">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: THÔNG BÁO ================= -->
+<div class="overlay" id="modalMsg" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="msgTitle">
+    <h3 id="msgTitle">Có một việc nhỏ</h3>
+    <p id="msgText"></p>
+    <div class="modal__btns"><button class="pill" data-close="modalMsg" type="button">Đã hiểu</button></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: CHÀO MỪNG (lần đầu, chỉ trang chính) ================= -->
+<div class="overlay" id="modalWelcome" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <h3 id="welcomeTitle">Chào mừng đến <em class="script">Táo Vàng</em></h3>
+    <p>Lịch mẫu đã nạp sẵn: <b>học trên trường T2–T6 sáng 7:00–11:30</b>; vài mục tự học và học thêm mẫu ở buổi chiều (13:30–18:30) và buổi tối (19:00–1g sáng).</p>
+    <p>Vào <b>Thời khóa biểu</b> để tự xếp lịch của riêng bạn — và tạo <b>Tài khoản</b> để giữ lịch riêng khi có nhiều người dùng chung máy.</p>
+    <div class="modal__btns"><button class="pill" data-close="modalWelcome" type="button">Vào học thôi</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js?v=4" defer></script>
+<script src="landing.js?v=4" defer></script>
+</body>
+</html>
