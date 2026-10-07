@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pomodoro — Táo Vàng</title>
+<meta name="description" content="Pomodoro tự chỉnh thời gian: bấm bắt đầu, một đóa hoa thuỷ tinh trong vườn đêm sẽ nở dần và nở hoàn chỉnh khi thời gian về 0.">
+<meta name="theme-color" content="#c9dcef">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z' fill='%23c9a227'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="appleGrad" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#fbeaa4"/><stop offset="26%" stop-color="#eec24d"/>
+      <stop offset="60%" stop-color="#c8991e"/><stop offset="100%" stop-color="#7a5a0e"/>
+    </radialGradient>
+    <radialGradient id="appleShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8db464"/><stop offset="100%" stop-color="#486f2f"/>
+    </linearGradient>
+    <!-- gradient cánh hoa: ngoài xanh thuỷ tinh, giữa ngà, trong vàng ấm (theo ảnh hoa tham khảo) -->
+    <linearGradient id="petOuter" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#dfe9f4" stop-opacity=".95"/>
+      <stop offset="55%" stop-color="#b9cbe2" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#93aacd" stop-opacity=".28"/>
+    </linearGradient>
+    <linearGradient id="petMid" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#f8f4ec" stop-opacity=".95"/>
+      <stop offset="60%" stop-color="#dcd6cb" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#bcb5aa" stop-opacity=".32"/>
+    </linearGradient>
+    <linearGradient id="petInner" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#fdf6e3" stop-opacity=".98"/>
+      <stop offset="60%" stop-color="#f3ddad" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#e5c07a" stop-opacity=".45"/>
+    </linearGradient>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffedc4" stop-opacity=".95"/>
+      <stop offset="55%" stop-color="#eec27c" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#c98f3a" stop-opacity="0"/>
+    </radialGradient>
+    <!-- rìa cánh hoa hữu cơ: lệch nhẹ bằng nhiễu → mép cánh như cánh thật -->
+    <filter id="petalEdge" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.055 0.09" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7"/>
+      <feGaussianBlur stdDeviation=".3"/>
+    </filter>
+    <filter id="fCloudsFar" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="4" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.62"/>
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <filter id="fCloudsNear" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0055 0.013" numOctaves="5" seed="4" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.1 -0.72"/>
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+    <g id="appleShape">
+      <path d="M32 18c-8-6-20-2-20 12 0 12 9 22 20 22s20-10 20-22c0-14-12-18-20-12z" fill="url(#appleGrad)"/>
+      <ellipse cx="24" cy="27" rx="6.5" ry="9.5" fill="url(#appleShine)" transform="rotate(-18 24 27)"/>
+      <path d="M32 17.4c-.4-5.2 1.8-8.2 5.8-10.2" stroke="#5c4322" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <path d="M38.5 8.2c4.6-2.4 9-1.3 10 .5-2.8 2.5-7.2 2.9-10-.5z" fill="url(#leafGrad)"/>
+    </g>
+  </defs>
+</svg>
+
+<noscript>
+  <p style="max-width:640px;margin:20px auto;padding:16px 22px;border:1px solid #c9a227;border-radius:16px;background:#faf8f4;color:#1c1a17;font-family:Tahoma,sans-serif">
+    Trang này cần JavaScript để chạy Pomodoro. Bạn hãy bật JavaScript rồi tải lại nhé!
+  </p>
+</noscript>
+
+<div class="sky" aria-hidden="true"></div>
+<div class="clouds clouds--far" aria-hidden="true"></div>
+<div class="clouds clouds--near" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Điều hướng chính">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__logo" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    </span>
+    Táo Vàng
+  </a>
+  <div class="nav__right">
+    <div class="nav__links">
+      <a href="thoikhoabieu.html">Thời khóa biểu</a>
+      <a href="pomodoro.html" class="active">Pomodoro</a>
+      <a href="ghichu.html">Ghi chú</a>
+    </div>
+    <div class="nav__user" id="navUser"></div>
+  </div>
+</nav>
+
+<!-- ================= ĐẦU TRANG ================= -->
+<header class="page-head">
+  <p class="kicker">Mục 02 — Pomodoro</p>
+  <h1>Vườn đêm <em class="script">nở hoa</em></h1>
+  <p class="page-sub">Tự chỉnh số phút tập trung. Bấm <b>Bắt đầu</b> — chồi hoa trong vườn đêm sẽ từ từ mở những cánh ra, và nở hoàn chỉnh đúng lúc đồng hồ về 00:00. Hết phiên, vài cánh hoa rơi nhẹ như lời chúc.</p>
+  <svg class="deco" width="46" height="46" viewBox="0 0 64 64" aria-hidden="true"><use href="#appleShape"/></svg>
+</header>
+
+<main>
+  <section class="section" id="pomodoro">
+    <div class="night reveal">
+      <!-- [ẢNH HOA] (tùy chọn) muốn dùng ảnh hoa thật như tham khảo: thay <svg class="flowerSvg">
+           bằng <img src="img/flower.png" alt="" style="width:280px"> (PNG trong suốt, ~600px) —
+           khi đó hiệu ứng nở sẽ chuyển thành hiệu ứng mờ dần hiện dần theo tiến độ -->
+      <div class="garden" id="garden">
+        <svg class="flowerSvg" viewBox="0 0 300 300" aria-hidden="true">
+          <g id="stars"></g>
+          <g transform="translate(150,150)">
+            <path d="M0 0 C -5 48, 4 96, 0 142" stroke="rgba(216,204,168,.5)" stroke-width="2" fill="none"/>
+            <circle id="coreGlow" r="20" fill="url(#coreGlow)" opacity=".25"/>
+            <g id="petals" filter="url(#petalEdge)"></g>
+            <circle id="core" r="9" fill="#f6e3b2" opacity=".9"/>
+          </g>
+        </svg>
+        <div class="pomo__time"><b id="pomoTime">25:00</b></div>
+      </div>
+
+      <div class="pomo__side">
+        <h3>Một đóa hoa — <em class="script">một phiên học</em></h3>
+        <label class="field">Môn đang tập trung
+          <select id="pomoSubject"></select>
+        </label>
+        <div class="pomo__btns">
+          <button class="pill" id="btnStart" type="button">Bắt đầu</button>
+          <button class="pill pill--ghost" id="btnResetPomo" type="button">Đặt lại</button>
+        </div>
+        <p class="fineprint" id="pomoInfo"></p>
+
+        <fieldset class="settings" style="margin:22px 0 0">
+          <legend>Tự chỉnh thời gian (phút)</legend>
+          <div class="settings__row">
+            <label class="setting">Tập trung <input type="number" id="pWork" min="5" max="120" step="5"></label>
+            <label class="setting">Nghỉ ngắn <input type="number" id="pShort" min="1" max="60" step="1"></label>
+            <label class="setting">Nghỉ dài <input type="number" id="pLong" min="5" max="90" step="5"></label>
+            <label class="setting">Vòng / nghỉ dài <input type="number" id="pRounds" min="2" max="8" step="1"></label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <p class="fineprint reveal" style="margin-top:22px">Hoa nở theo tiến độ phiên tập trung; khi hết phiên, vài cánh hoa rơi nhẹ trong vườn đêm. Chuyển phiên có tiếng chuông dịu (cần bấm một lần trước để trình duyệt cho phép âm thanh).</p>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer" id="footer">
+  <p class="kicker reveal">Nhật ký &amp; dữ liệu</p>
+  <h2 class="footer__title reveal">Hoa nở hết phiên —<br>&amp; bạn <em class="script">giỏi hơn</em> một chút.</h2>
+  <p class="footer__sub">Toàn bộ dữ liệu nằm ngay trong máy bạn (localStorage) — gắn với tài khoản đang đăng nhập.</p>
+  <p class="footer__giant">( 25 phút · một đóa hoa )</p>
+  <div class="footer__apples" aria-hidden="true">
+    <svg class="fapple" width="58" height="58" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="84" height="84" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="66" height="66" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="94" height="94" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="60" height="60" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="78" height="78" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+    <svg class="fapple" width="64" height="64" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
+  </div>
+  <div class="footer__meta">
+    <span>© 2026 Táo Vàng — nhật ký học tập phong cách surreal · làm với localStorage &amp; một quả táo</span>
+    <span class="footer__links">
+      <a class="linklike" href="index.html">Về trang chính</a> ·
+      <button class="linklike" id="btnReset" type="button">Reset dữ liệu</button>
+    </span>
+  </div>
+</footer>
+
+<!-- ================= MODAL: XÁC NHẬN ================= -->
+<div class="overlay" id="modalConfirm" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Xác nhận nhé</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal__btns">
+      <button class="pill pill--ghost" id="btnNo" type="button">Để thôi</button>
+      <button class="pill" id="btnYes" type="button">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: THÔNG BÁO ================= -->
+<div class="overlay" id="modalMsg" hidden>
+  <div class="glass modal" role="dialog" aria-modal="true" aria-labelledby="msgTitle">
+    <h3 id="msgTitle">Có một việc nhỏ</h3>
+    <p id="msgText"></p>
+    <div class="modal__btns"><button class="pill" data-close="modalMsg" type="button">Đã hiểu</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js?v=4" defer></script>
+<script src="pomodoro.js?v=4" defer></script>
+</body>
+</html>
