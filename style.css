@@ -84,6 +84,7 @@ h1 .script,h2 .script{font-size:1.05em}
   display:inline-flex;align-items:center;gap:10px;flex:none;white-space:nowrap;
   font:500 21px var(--serif);text-decoration:none;
 }
+.nav__brandName{max-width:210px;overflow:hidden;text-overflow:ellipsis}
 .nav__logo{
   width:34px;height:34px;border-radius:50%;background:var(--ink);
   display:grid;place-items:center;flex:none;
@@ -136,12 +137,6 @@ h1 .script,h2 .script{font-size:1.05em}
     linear-gradient(112deg,transparent 40%,rgba(255,255,255,.55) 46%,transparent 51%),
     linear-gradient(112deg,transparent 58%,rgba(255,255,255,.4) 63%,transparent 68%);
 }
-.hero__branch{
-  position:absolute;top:clamp(4px,6vh,44px);left:-14px;
-  width:min(480px,60vw);pointer-events:none;z-index:0;
-}
-.hero__branchSvg{display:block;width:100%;height:auto;transform-origin:12% 18%;animation:sway 7s ease-in-out infinite}
-@keyframes sway{0%,100%{rotate:0deg}50%{rotate:1.3deg}}
 .hero__text{position:relative;z-index:1;min-width:0}
 .hero__title{
   font:500 clamp(38px,6.5vw,72px)/1.08 var(--serif);
@@ -188,10 +183,6 @@ h1 .script,h2 .script{font-size:1.05em}
 .page-head{max-width:1120px;margin:0 auto;padding:126px clamp(16px,4vw,40px) 10px;position:relative}
 .page-head h1{font:500 clamp(32px,5vw,56px)/1.12 var(--serif);margin:.25em 0 .2em}
 .page-sub{max-width:560px;color:var(--ink-soft);font-size:15px}
-.page-head .deco{
-  position:absolute;right:clamp(16px,4vw,40px);top:112px;
-  pointer-events:none;transform:rotate(6deg);
-}
 
 /* ---------- 7. Section ---------- */
 .section{
@@ -499,13 +490,12 @@ input[type=text],input[type=time],input[type=number],input[type=password],select
 }
 .toast.show{opacity:1;translate:-50% 0}
 
-/* ---------- 17. Chuyển trang mượt (fade-in khi đến, fade-out khi rời) ---------- */
-.page-anim body{animation:pageIn .55s cubic-bezier(.2,.7,.3,1) both}
-@keyframes pageIn{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
-.page-anim.page-leaving body{
-  opacity:0;translate:0 -12px;
-  transition:opacity .24s ease,translate .24s ease;
-}
+/* ---------- 17. Chuyển trang mượt (fade-in khi đến, fade-out khi rời) ----------
+   CHỈ dùng opacity: nếu translate body thì body thành containing block,
+   làm modal fixed neo vào thân trang và mây fixed tràn ra tạo khoảng trống cuối trang. */
+.page-anim body{animation:pageIn .55s ease both}
+@keyframes pageIn{from{opacity:0}}
+.page-anim.page-leaving body{opacity:0;transition:opacity .22s ease}
 
 /* ---------- 18. Hiệu ứng nhẹ ---------- */
 @keyframes rise{from{opacity:0;translate:0 16px}}
@@ -547,9 +537,7 @@ input[type=text],input[type=time],input[type=number],input[type=password],select
 @media (max-width:640px){
   .section{padding:44px 16px 12px;scroll-margin-top:64px}
   .page-head{padding:108px 16px 8px}
-  .page-head .deco{display:none}
   .hero{padding:112px 16px 56px}
-  .hero__branch{display:none}
   .hero__ghost{display:none}
   .rays{display:none}
   .board{padding:24px 18px;gap:24px 18px}
@@ -569,7 +557,7 @@ input[type=text],input[type=time],input[type=number],input[type=password],select
   html{scroll-behavior:auto}
   .hero__text>*,.hero__side,.hero__cta{animation:none!important}
   .js .reveal{opacity:1!important;translate:0 0!important;transition:none!important}
-  .sky::before,.hero__branchSvg,.star,.garden.breathing,.clouds{animation:none!important}
+  .sky::before,.star,.garden.breathing,.clouds{animation:none!important}
   .page-anim body{animation:none!important}
   .page-anim.page-leaving body{opacity:1;translate:0;transition:none}
   .petal-fall{display:none}
