@@ -106,7 +106,7 @@ const freshState=()=>({
     {sec:'toi',day:4,start:'19:30',end:'21:30',kind:'extra',subject:'Toán',note:'Thầy A'},
     {sec:'toi',day:1,start:'21:45',end:'22:45',kind:'self',subject:'Tiếng Anh'},
   ],
-  pomo:{work:25,short:5,long:15,rounds:4,subject:'Toán'},
+  pomo:{work:25,short:5,long:15,rounds:4,subject:'Toán',yt:[]},
   todo:[
     {text:'Ôn định lí Vi-et — làm 5 bài', done:false},
     {text:'Vẽ lại sơ đồ mạch + định luật Ôm', done:false},
