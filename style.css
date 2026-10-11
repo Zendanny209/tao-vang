@@ -426,7 +426,7 @@ fieldset legend{
   display:grid;grid-template-columns:minmax(0,1.65fr) minmax(230px,1fr);
   gap:20px;align-items:start;margin-top:16px;
 }
-.yt__player{background:#000;border-radius:14px;overflow:hidden}
+.yt__player{background:transparent;border-radius:14px;overflow:hidden;line-height:0}
 .yt__player iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
 .yt__player[hidden]{display:none}
 .yt__list{margin:0}
