@@ -294,6 +294,31 @@ fieldset legend{
 .setting input{width:112px;padding:8px 10px;font:500 15px var(--sans)}
 .week--self .day{min-height:120px}
 
+/* nhập nhanh lịch từ ảnh (OCR) */
+.ocr__title{font:500 24px var(--serif);margin:0 0 10px}
+.ocr__actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px}
+.ocr__status{font:13px var(--sans);color:var(--ink-soft)}
+.ocr__progress{height:6px;border-radius:999px;background:rgba(28,26,23,.12);overflow:hidden;margin-top:14px}
+.ocr__progress i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s}
+.ocr__scroll{overflow-x:auto;margin-top:16px}
+.ocr__grid{border-collapse:collapse;width:100%;min-width:660px}
+.ocr__grid th{
+  font:600 11.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);padding:8px 6px;text-align:center;
+  border-bottom:1.5px solid rgba(28,26,23,.25);
+}
+.ocr__grid td{border:1px dashed rgba(28,26,23,.18);padding:0}
+.ocr__grid td:first-child{
+  font:500 14px var(--serif);color:var(--ink-soft);text-align:center;
+  padding:6px 10px;white-space:nowrap;border:none;
+}
+.ocr__grid td:first-child small{font:11px var(--sans);color:var(--ink-soft);opacity:.8}
+.ocr__cell{
+  width:100%;min-width:88px;border:0;background:transparent;
+  font:14px var(--sans);color:var(--ink);padding:10px 8px;text-align:center;
+}
+.ocr__cell:focus{background:var(--gold-soft);outline:none}
+
 /* ---------- 11. Sticky notes ---------- */
 .board{
   position:relative;
@@ -353,30 +378,47 @@ fieldset legend{
   gap:clamp(24px,5vw,56px);align-items:center;
   color:var(--ivory);
 }
-.garden{position:relative;width:300px;height:300px;flex:none;margin:0 auto}
-.garden svg{display:block;width:100%;height:100%}
+.garden{
+  position:relative;width:300px;height:300px;flex:none;margin:0 auto;
+  border-radius:50%;overflow:hidden;
+  background:radial-gradient(circle at 50% 18%, #1e1911 0%, #13100a 62%, #0c0a07 100%);
+  border:1.5px solid rgba(250,248,244,.16);
+  box-shadow:inset 0 0 46px rgba(0,0,0,.55), 0 0 0 7px rgba(250,248,244,.04);
+}
+.garden__stars{position:absolute;inset:0;width:100%;height:100%}
 .garden.breathing{animation:breathe 4.5s ease-in-out infinite}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.016)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
 .star{animation:tw 3.4s ease-in-out infinite}
-.petal-fall{
-  position:absolute;top:-14px;width:13px;height:13px;pointer-events:none;opacity:.85;
-  border-radius:64% 36% 58% 42%/62% 44% 56% 38%;
-  background:linear-gradient(160deg,#fdf4de,#e9d3a0);
-  box-shadow:0 1px 3px rgba(0,0,0,.25);
-  animation:petalFall linear forwards;
+/* mặt nước dâng: càng gần hết giờ càng cao; đỉnh là hai lớp sóng xoay chậm */
+.water{
+  position:absolute;left:-12%;right:-12%;bottom:0;height:0%;
+  background:linear-gradient(180deg, rgba(238,205,118,.30) 0%, rgba(201,162,39,.52) 55%, rgba(160,124,26,.66) 100%);
+  box-shadow:0 -8px 30px rgba(233,196,106,.28);
+  transition:height .6s ease;
 }
-@keyframes petalFall{
-  0%{transform:translate(0,0) rotate(0);opacity:.9}
-  100%{transform:translate(var(--dx,20px),318px) rotate(240deg);opacity:0}
+.garden.full .water{box-shadow:0 -8px 42px rgba(238,205,118,.5)}
+.water__wave{
+  position:absolute;top:-8px;left:-60%;width:220%;height:16px;border-radius:42%;
+  background:rgba(240,214,140,.38);animation:waveSpin 5.5s linear infinite;
 }
+.water__wave--2{top:-6px;background:rgba(240,214,140,.22);animation-duration:8.5s;animation-direction:reverse}
+@keyframes waveSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.petal-fall{display:none} /* đã bỏ hiệu ứng hoa — giữ lớp tương thích cũ */
 .pomo__time{
   position:absolute;inset:0;display:grid;place-content:center;text-align:center;
   pointer-events:none;
 }
 .pomo__time b{
   font:500 50px/1 var(--serif);color:var(--ivory);
-  font-variant-numeric:tabular-nums;text-shadow:0 2px 16px rgba(0,0,0,.5);
+  font-variant-numeric:tabular-nums;text-shadow:0 2px 18px rgba(0,0,0,.65);
 }
+/* danh sách nhạc YouTube */
+.yt{margin-top:26px}
+.yt__form{display:flex;gap:10px;margin-top:14px}
+.yt__form input{flex:1;min-width:0}
+.yt__frame{margin-top:16px;border-radius:16px;overflow:hidden;background:#000}
+.yt__frame iframe{display:block;width:100%;height:280px;border:0}
+.yt__list{margin-top:8px}
 .night h3{font:500 24px var(--serif);margin:0 0 6px}
 .night .fineprint{color:rgba(250,248,244,.62)}
 .night .field{max-width:240px;margin:0 0 18px}
@@ -557,10 +599,10 @@ input[type=text],input[type=time],input[type=number],input[type=password],select
   html{scroll-behavior:auto}
   .hero__text>*,.hero__side,.hero__cta{animation:none!important}
   .js .reveal{opacity:1!important;translate:0 0!important;transition:none!important}
-  .sky::before,.star,.garden.breathing,.clouds{animation:none!important}
+  .sky::before,.star,.garden.breathing,.clouds,.water__wave{animation:none!important}
   .page-anim body{animation:none!important}
   .page-anim.page-leaving body{opacity:1;translate:0;transition:none}
-  .petal-fall{display:none}
+  .water{transition:none}
   .pill,.day,.note,.toast,.toc__card{transition:none}
   .day:hover,.pill:hover,.toc__card:hover{translate:0;transform:none}
 }
