@@ -230,7 +230,101 @@ function ocrDetect(lines){
   return {dayCols,dayRows,periodRows,periodCols,headerY,headerX,consumed};
 }
 
-/* ---- gán chữ còn lại vào ô (ngày, tiết) ---- */
+/* ---- dò lưới bảng bằng ĐƯỜNG KẺ (ảnh TKB luôn có viền đen) ---- */
+function ocrGridLines(canvas){
+  const W=canvas.width,H=canvas.height;
+  const d=canvas.getContext('2d').getImageData(0,0,W,H).data;
+  const dark=(x,y)=>d[(y*W+x)*4]<128;
+  const colScore=new Float32Array(W),rowScore=new Float32Array(H);
+  for(let x=0;x<W;x++){let c=0;for(let y=0;y<H;y+=2)if(dark(x,y))c++;colScore[x]=c/(H/2)}
+  for(let y=0;y<H;y++){let c=0;for(let x=0;x<W;x+=2)if(dark(x,y))c++;rowScore[y]=c/(W/2)}
+  const cluster=(scores,limit)=>{
+    const out=[];let run=[];
+    for(let i=0;i<scores.length;i++){
+      if(scores[i]>=limit)run.push(i);
+      else if(run.length){out.push(run.reduce((a,b)=>a+b,0)/run.length);run=[]}
+    }
+    if(run.length)out.push(run.reduce((a,b)=>a+b,0)/run.length);
+    return out;
+  };
+  /* 1 dòng kẻ dọc cần cháy tối quá nửa chiều cao — đường kẻ mảnh (1-2px) cũng bắt được */
+  const vLines=cluster(colScore,0.30);
+  const hLines=cluster(rowScore,0.30);
+  return {vLines,hLines};
+}
+
+/* OCR một vùng chữ nhật của canvas đã làm sạch (dùng cho từng ô) */
+function ocrCellCrop(canvas,x0,y0,x1,y1,worker){
+  return new Promise(res=>{
+    const sw=Math.max(10,x1-x0),sh=Math.max(10,y1-y0);
+    const t=document.createElement('canvas');
+    t.width=sw*2;t.height=sh*2;
+    const tc=t.getContext('2d');
+    tc.imageSmoothingEnabled=false;
+    tc.fillStyle='#fff';tc.fillRect(0,0,t.width,t.height);
+    tc.drawImage(canvas,x0,y0,sw,sh,0,0,t.width,t.height);
+    worker.recognize(t,{}, {text:true})
+      .then(({data})=>res(String(data.text||'').replace(/\s+/g,' ').trim()))
+      .catch(()=>res(''));
+  });
+}
+function ocrCellText(canvas,c,r,worker){
+  return ocrCellCrop(canvas,c.x0,r.y0,c.x1,r.y1,worker);
+}
+
+/* ---- dựng lưới từ ĐƯỜNG KẺ: hàng đầu = header (gán ngày), cột trái = số tiết,
+       từng ô giao nhau được OCR riêng → không sót cột, không dính ô ---- */
+async function ocrBuildGridFromLines(canvas,gl,worker,onp){
+  const v=gl.vLines,h=gl.hLines;
+  if(v.length<4||h.length<3)return null;
+  /* hàng dữ liệu: giữa h[1] và h[h.length-1]; hàng 0 = header */
+  const rows=[];for(let i=1;i<h.length-1;i++)rows.push({y0:Math.round(h[i]),y1:Math.round(h[i+1])});
+  const cols=[];for(let i=0;i<v.length-1;i++)cols.push({x0:Math.round(v[i]),x1:Math.round(v[i+1])});
+  /* OCR hàng header → gán ngày cho từng cột */
+  const dayByCol={};
+  for(let i=0;i<cols.length;i++){
+    const t=await ocrCellCrop(canvas,cols[i].x0+2,Math.round(h[0])+2,cols[i].x1-2,Math.round(h[1])-2,worker);
+    const d=ocrDayFromText(t);
+    if(d!==null)dayByCol[i]=d;
+  }
+  if(Object.keys(dayByCol).length<3)return null;
+  /* số tiết: OCR cột nhãn trái của từng hàng dữ liệu (thiếu/quá thì đoán theo vị trí) */
+  const pByRow=[];
+  for(let i=0;i<rows.length;i++){
+    const t=await ocrCellCrop(canvas,v[0]+2,rows[i].y0+2,v[1]-2,rows[i].y1-2,worker);
+    const n=ocrNorm(t).replace(/[^1-9]/g,'');
+    pByRow.push(n?+n[0]:(i+1));
+  }
+  /* OCR từng ô dữ liệu (bỏ cột nhãn) */
+  const grid={};OCR_DAYS.forEach(d=>grid[d]={});
+  const dataCols=Object.keys(dayByCol);
+  let done=0;const total=dataCols.length*rows.length;
+  for(const ci of dataCols){
+    const day=dayByCol[ci],vi=+ci;
+    if(vi+2>=v.length)continue; // thiếu đường kẻ phải — bỏ cột
+    for(let ri=0;ri<rows.length;ri++){
+      const p=pByRow[ri];
+      const x0=v[vi+1]+2,x1=v[vi+2]-2;
+      const t=await ocrCellCrop(canvas,x0,rows[ri].y0+2,x1,rows[ri].y1-2,worker);
+      const s=ocrSubject(t);
+      /* bỏ nhiễu ô trống: chữ ≤2 ký tự mà không khớp môn nào (vd "LI", "L1") */
+      if(s&&!(s===t.trim()&&ocrNorm(t).length<=2))grid[day][p]=s;
+      done++;onp(done/total);
+    }
+  }
+  return grid;
+}
+function ocrDayFromText(t){
+  const parts=String(t).split(/\s+/).filter(Boolean);
+  for(let i=0;i<parts.length;i++){
+    const nxt=parts[i+1];
+    const nn=nxt?ocrNorm(nxt):'';
+    const nd=(nn&&/^[2-7]$/.test(nn))?+nn:null;
+    const d=ocrDayOf(ocrNorm(parts[i]),nd);
+    if(d!==null)return d;
+  }
+  return null;
+}
 function ocrBuildGrid(words,det){
   const grid={};
   OCR_DAYS.forEach(d=>grid[d]={});
@@ -349,19 +443,29 @@ async function ocrRun(file){
     const det=ocrDetect(lines);
     window.__ocrDebug={words,lines,det}; // phục vụ gỡ lỗi
     let grid=ocrBuildGrid(words,det);
-    /* LƯỢT 2 — đọc kỹ TỪNG Ô: khi đã dò được khung bảng, cắt từng ô từ ảnh
-       đã làm sạch và OCR riêng (PSM 6) → chính xác hơn hẳn so với ghép từ */
+    await worker.setParameters({tessedit_pageseg_mode:'6'}); // khối chữ 1–2 dòng cho lượt đọc từng ô
+    /* ƯU TIÊN 1 — dò LƯỚI BẢNG bằng đường kẻ (TKB có viền): từng ô giao nhau
+       được OCR riêng → không sót cột, không dính ô liền kề */
+    const gl=ocrGridLines(pre.canvas);
+    if(gl.vLines.length>=4&&gl.hLines.length>=3){
+      ocrSetStatus('Đã tìm thấy lưới bảng — đọc từng ô…');
+      const lineGrid=await ocrBuildGridFromLines(pre.canvas,gl,worker,
+        f=>ocrProgress(0.34+0.6*f));
+      if(lineGrid)grid=lineGrid;
+    }
+    /* ƯU TIÊN 2 — ảnh không rõ viền: đọc kỹ từng ô theo tâm cột/hàng đã dò */
     if(grid&&((det.dayCols&&det.periodRows)||(det.dayRows&&det.periodCols))){
       const ranges=ocrCellRanges(det);
       if(ranges){
-        await worker.setParameters({tessedit_pageseg_mode:'6'}); // khối chữ 1–2 dòng
         const jobs=[];
         ranges.cols.forEach(c=>ranges.rows.forEach(r=>jobs.push({c,r})));
         let done=0;
         for(const job of jobs){
           const text=await ocrCellText(pre.canvas,job.c,job.r,worker);
-          grid[job.c.day]=grid[job.c.day]||{};
-          grid[job.c.day][job.r.p]=ocrSubject(text);
+          if(text){ // chỉ ghi đè khi đọc được — không xóa kết quả lượt 1 bằng chuỗi rỗng
+            grid[job.c.day]=grid[job.c.day]||{};
+            grid[job.c.day][job.r.p]=ocrSubject(text);
+          }
           done++;
           ocrSetStatus('Đọc kỹ từng ô… ('+done+'/'+jobs.length+')');
           ocrProgress(0.34+0.6*(done/jobs.length));
