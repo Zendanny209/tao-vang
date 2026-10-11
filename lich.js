@@ -9,38 +9,49 @@
 
 let editKind='self', editSec='chieu', editIdx=-1;
 
-/* ---------------- RENDER ---------------- */
+/* ---------------- RENDER PHẦN 1 — BUỔI SÁNG (sửa trực tiếp trên ô lịch) ---------------- */
 function renderSchoolGrid(){
   $('schoolGrid').innerHTML=[1,2,3,4,5,6,0].map(d=>{
-    const list=cfg.school.filter(x=>x.day===d).sort((a,b)=>toMin(a.start)-toMin(b.start));
+    const list=cfg.school.map((x,i)=>({x,i})).filter(o=>o.x.day===d)
+      .sort((a,b)=>toMin(a.x.start)-toMin(b.x.start));
     return `<article class="day glass${d===TODAY_D?' day--today':''}">
       ${d===TODAY_D?'<span class="day__today">hôm nay</span>':''}
       <h3 class="day__name">${DAY_FULL[d]}</h3>
-      ${list.map(x=>`<p class="evt"><i></i><span class="evt__t">${x.start}–${x.end}</span> ${esc(x.subject)}</p>`).join('')
-        ||'<p class="day__empty">không học chính</p>'}
+      ${list.map(({x,i})=>`<div class="sevt">
+          <i></i><span class="evt__t">${x.start}–${x.end}</span>
+          <input class="sevt__in" value="${esc(x.subject)}" data-i="${i}" aria-label="Tên tiết học">
+          <button class="sevt__x" data-del="${i}" type="button" aria-label="Xóa tiết">✕</button>
+        </div>`).join('')||'<p class="day__empty">không học chính</p>'}
+      <button class="day__add" data-add="${d}" type="button" aria-label="Thêm tiết cho ${DAY_FULL[d]}" title="Thêm tiết">＋</button>
     </article>`;
   }).join('');
 }
 
-function renderSchoolList(){
-  const box=$('schoolList');
-  if(!cfg.school.length){
-    box.innerHTML='<li class="xrow xrow--empty">Buổi sáng còn trống — thêm tiết đầu tiên nhé.</li>';
+/* sửa trực tiếp trên ô: đổi tên (Enter/blur) · ✕ xóa · ＋ thêm tiết đúng thứ, đúng giờ trống */
+$('schoolGrid').addEventListener('change',e=>{
+  const inp=e.target.closest('.sevt__in');if(!inp)return;
+  const i=+inp.dataset.i;
+  cfg.school[i].subject=inp.value.trim()||'Tiết học';
+  saveState();renderSchoolGrid();toast('Đã đổi tên tiết học.');
+});
+$('schoolGrid').addEventListener('click',e=>{
+  const del=e.target.closest('[data-del]');
+  if(del){
+    const i=+del.dataset.del,x=cfg.school[i];
+    cfg.school.splice(i,1);commit();toast(`Đã gỡ tiết ${x.subject}.`);
     return;
   }
-  box.innerHTML=[...cfg.school]
-    .map((x,i)=>({x,i}))
-    .sort((a,b)=>(a.x.day-b.x.day)||(toMin(a.x.start)-toMin(b.x.start)))
-    .map(({x,i})=>`<li class="xrow">
-      <span class="xrow__day">${DAY_FULL[x.day]}</span>
-      <span class="xrow__time">${x.start}–${x.end}</span>
-      <b class="xrow__subj xrow__subj--dot">${esc(x.subject)}</b>
-      <span class="xrow__acts">
-        <button class="linklike" data-kind="school" data-act="edit" data-i="${i}" type="button">Sửa</button>
-        <button class="linklike" data-kind="school" data-act="del" data-i="${i}" type="button">Xóa</button>
-      </span>
-    </li>`).join('');
-}
+  const add=e.target.closest('[data-add]');
+  if(add){
+    const d=+add.dataset.add;
+    openEntry('school','',-1);
+    $('fDay').value=String(d);
+    const used=cfg.school.filter(x=>x.day===d).map(x=>x.start);
+    const slot=TIET_TIMES.find(t=>!used.includes(t.start))||TIET_TIMES[0];
+    $('fStart').value=slot.start;$('fEnd').value=slot.end;
+    $('fSubjectText').focus();
+  }
+});
 
 /* lưới + danh sách cho một buổi ('chieu' | 'toi') */
 function renderSec(sec){
@@ -92,7 +103,7 @@ function overlapsSchool(x){
 
 /* ---------------- RENDER FLOW ---------------- */
 function renderAll(){
-  renderSchoolGrid();renderSchoolList();
+  renderSchoolGrid();
   renderSec('chieu');renderSec('toi');
 }
 const commit=()=>{saveState();renderAll()};
@@ -156,20 +167,19 @@ $('entryForm').addEventListener('submit',e=>{
 });
 
 /* nút Thêm của từng buổi */
-$('btnAddSchool').onclick=()=>openEntry('school','',-1);
 $('btnAddChieu').onclick=()=>openEntry('self','chieu',-1);
 $('btnAddToi').onclick=()=>openEntry('self','toi',-1);
 
-/* Sửa/Xóa (uỷ quyền trên mọi danh sách) */
-document.querySelectorAll('#schoolList,#chieuList,#toiList').forEach(list=>
+/* Sửa/Xóa (uỷ quyền trên các danh sách chiều/tối) */
+document.querySelectorAll('#chieuList,#toiList').forEach(list=>
   list.addEventListener('click',e=>{
     const b=e.target.closest('button[data-act]');if(!b)return;
     const kind=b.dataset.kind,sec=b.dataset.sec||'',i=+b.dataset.i;
     if(b.dataset.act==='edit'){openEntry(kind,sec,i);return}
-    const x=kind==='school'?cfg.school[i]:cfg.slots[i];
+    const x=cfg.slots[i];
     const name=kind==='busy'?x.label:(x.subject||x.label);
     askConfirm(`Gỡ ${TITLES[kind]} "${name}" — ${DAY_FULL[x.day]} ${x.start}–${x.end}?`,()=>{
-      if(kind==='school')cfg.school.splice(i,1);else cfg.slots.splice(i,1);
+      cfg.slots.splice(i,1);
       commit();toast(`Đã gỡ ${TITLES[kind]}.`);
     });
   }));
