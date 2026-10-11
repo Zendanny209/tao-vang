@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
@@ -27,33 +27,6 @@
     <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#8db464"/><stop offset="100%" stop-color="#486f2f"/>
     </linearGradient>
-    <!-- gradient cánh hoa: ngoài xanh thuỷ tinh, giữa ngà, trong vàng ấm (theo ảnh hoa tham khảo) -->
-    <linearGradient id="petOuter" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#dfe9f4" stop-opacity=".95"/>
-      <stop offset="55%" stop-color="#b9cbe2" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="#93aacd" stop-opacity=".28"/>
-    </linearGradient>
-    <linearGradient id="petMid" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#f8f4ec" stop-opacity=".95"/>
-      <stop offset="60%" stop-color="#dcd6cb" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="#bcb5aa" stop-opacity=".32"/>
-    </linearGradient>
-    <linearGradient id="petInner" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#fdf6e3" stop-opacity=".98"/>
-      <stop offset="60%" stop-color="#f3ddad" stop-opacity=".7"/>
-      <stop offset="100%" stop-color="#e5c07a" stop-opacity=".45"/>
-    </linearGradient>
-    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffedc4" stop-opacity=".95"/>
-      <stop offset="55%" stop-color="#eec27c" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="#c98f3a" stop-opacity="0"/>
-    </radialGradient>
-    <!-- rìa cánh hoa hữu cơ: lệch nhẹ bằng nhiễu → mép cánh như cánh thật -->
-    <filter id="petalEdge" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.055 0.09" numOctaves="2" seed="3" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="7"/>
-      <feGaussianBlur stdDeviation=".3"/>
-    </filter>
     <filter id="fCloudsFar" x="-10%" y="-10%" width="120%" height="120%">
       <feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="4" seed="7" stitchTiles="stitch"/>
       <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.62"/>
@@ -103,31 +76,24 @@
 <!-- ================= ĐẦU TRANG ================= -->
 <header class="page-head">
   <p class="kicker">Mục 02 — Pomodoro</p>
-  <h1>Vườn đêm <em class="script">nở hoa</em></h1>
-  <p class="page-sub">Tự chỉnh số phút tập trung. Bấm <b>Bắt đầu</b> — chồi hoa trong vườn đêm sẽ từ từ mở những cánh ra, và nở hoàn chỉnh đúng lúc đồng hồ về 00:00. Hết phiên, vài cánh hoa rơi nhẹ như lời chúc.</p>
+  <h1>Ngược giờ, <em class="script">nước dâng đầy</em></h1>
+  <p class="page-sub">Tự chỉnh số phút tập trung. Bấm <b>Bắt đầu</b> — mặt nước trong vòm đêm dâng dần theo từng giây, ngập tròn ô khi đồng hồ về 00:00; bấm Đặt lại thì nước rút xuống. Gắn link YouTube để có riêng danh sách nhạc học.</p>
 </header>
 
 <main>
   <section class="section" id="pomodoro">
     <div class="night reveal">
-      <!-- [ẢNH HOA] (tùy chọn) muốn dùng ảnh hoa thật như tham khảo: thay <svg class="flowerSvg">
-           bằng <img src="img/flower.png" alt="" style="width:280px"> (PNG trong suốt, ~600px) —
-           khi đó hiệu ứng nở sẽ chuyển thành hiệu ứng mờ dần hiện dần theo tiến độ -->
       <div class="garden" id="garden">
-        <svg class="flowerSvg" viewBox="0 0 300 300" aria-hidden="true">
-          <g id="stars"></g>
-          <g transform="translate(150,150)">
-            <path d="M0 0 C -5 48, 4 96, 0 142" stroke="rgba(216,204,168,.5)" stroke-width="2" fill="none"/>
-            <circle id="coreGlow" r="20" fill="url(#coreGlow)" opacity=".25"/>
-            <g id="petals" filter="url(#petalEdge)"></g>
-            <circle id="core" r="9" fill="#f6e3b2" opacity=".9"/>
-          </g>
-        </svg>
+        <svg class="garden__stars" viewBox="0 0 300 300" aria-hidden="true"><g id="stars"></g></svg>
+        <div class="water" id="water" aria-hidden="true">
+          <i class="water__wave water__wave--1"></i>
+          <i class="water__wave water__wave--2"></i>
+        </div>
         <div class="pomo__time"><b id="pomoTime">25:00</b></div>
       </div>
 
       <div class="pomo__side">
-        <h3>Một đóa hoa — <em class="script">một phiên học</em></h3>
+        <h3>Nước dâng — <em class="script">thời gian trôi</em></h3>
         <label class="field">Môn đang tập trung
           <select id="pomoSubject"></select>
         </label>
@@ -148,16 +114,33 @@
         </fieldset>
       </div>
     </div>
-    <p class="fineprint reveal" style="margin-top:22px">Hoa nở theo tiến độ phiên tập trung; khi hết phiên, vài cánh hoa rơi nhẹ trong vườn đêm. Chuyển phiên có tiếng chuông dịu (cần bấm một lần trước để trình duyệt cho phép âm thanh).</p>
+    <p class="fineprint reveal" style="margin-top:22px">Nước dâng theo tiến độ phiên tập trung — càng gần hết giờ càng lên cao, ngập tròn ô khi về 00:00; Đặt lại thì nước rút xuống từ từ. Chuyển phiên có tiếng chuông dịu (cần bấm một lần trước để trình duyệt cho phép âm thanh).</p>
+
+    <div class="glass panel yt reveal">
+      <h3 class="ocr__title">Nhạc học từ <em class="script">YouTube</em></h3>
+      <p class="fineprint" style="margin-top:0">Dán link video hoặc playlist YouTube — danh sách lưu trong tài khoản của bạn. Bấm phát để vừa xem video vừa nghe nhạc trong giờ tập trung.</p>
+      <form class="yt__form" id="ytForm">
+        <input type="text" id="ytUrl" maxlength="300" placeholder="https://www.youtube.com/watch?v=…  hoặc  …list=…">
+        <button class="pill" type="submit">Thêm</button>
+      </form>
+      <div class="yt__frame" id="ytFrameWrap" hidden>
+        <iframe id="ytPlayer" src="" title="Trình phát YouTube"
+          allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <div class="modal__btns" style="justify-content:flex-start;margin-top:12px">
+          <button class="pill pill--ghost pill--small" id="btnYtStop" type="button">Dừng phát</button>
+        </div>
+      </div>
+      <ul class="yt__list" id="ytList"></ul>
+    </div>
   </section>
 </main>
 
 <!-- ================= FOOTER ================= -->
 <footer class="footer" id="footer">
   <p class="kicker reveal">Nhật ký &amp; dữ liệu</p>
-  <h2 class="footer__title reveal">Hoa nở hết phiên —<br>&amp; bạn <em class="script">giỏi hơn</em> một chút.</h2>
+  <h2 class="footer__title reveal">Nước ngập tròn phiên —<br>&amp; bạn <em class="script">giỏi hơn</em> một chút.</h2>
   <p class="footer__sub">Toàn bộ dữ liệu nằm ngay trong máy bạn (localStorage) — gắn với tài khoản đang đăng nhập.</p>
-  <p class="footer__giant">( 25 phút · một đóa hoa )</p>
+  <p class="footer__giant">( 25 phút · một vòm nước )</p>
   <div class="footer__apples" aria-hidden="true">
     <svg class="fapple" width="58" height="58" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
     <svg class="fapple" width="84" height="84" viewBox="0 0 64 64"><use href="#appleShape"/></svg>
@@ -200,6 +183,6 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="script.js?v=5" defer></script>
-<script src="pomodoro.js?v=4" defer></script>
+<script src="pomodoro.js?v=5" defer></script>
 </body>
 </html>
