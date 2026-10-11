@@ -168,11 +168,11 @@ $('ytList').addEventListener('click',e=>{
   const i=+b.dataset.i;
   if(b.dataset.yt==='play')ytPlayAt(i);
   else{
-    if(!$('ytFrameWrap').hidden)ytStop();
+    if(!$('ytFrameWrap').hidden)ytStop(); // dừng nhạc khi gỡ mục đang phát
     cfg.pomo.yt.splice(i,1);saveState();renderYt();toast('Đã xóa khỏi danh sách.');
   }
 });
-$('btnYtStop').onclick=ytStop;
+/* dừng phát: dùng nút pause ngay trên trình player của YouTube */
 
 /* INIT */
 renderPomoSubjects();
