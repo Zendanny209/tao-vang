@@ -48,6 +48,12 @@ function ocrSubject(raw){
   for(const k of keys){
     if(k.length>=3&&n.startsWith(k))return OCR_SUBJECTS[k];
   }
+  /* khớp "chứa": rác ở đầu/cuối ô (|, J, Ì…) không cản việc nhận môn;
+     gộp chữ lặp do OCR ("Tinhhooc" → "Tin học") */
+  const flat=n.replace(/(.)\1+/g,'$1');
+  for(const k of keys){
+    if(k.length>=4&&flat.includes(k.replace(/(.)\1+/g,'$1')))return OCR_SUBJECTS[k];
+  }
   return raw.trim().replace(/[_]+/g,' ').replace(/\s+/g,' ').replace(/^./,c=>c.toUpperCase());
 }
 
@@ -135,7 +141,7 @@ function ocrPreprocess(file){
         }
       }
       ctx.putImageData(d,0,0);
-      res(c.toDataURL('image/png'));
+      res({url:c.toDataURL('image/png'),canvas:c});
     };
     img.onerror=()=>rej(new Error('Không đọc được file ảnh.'));
     img.src=URL.createObjectURL(file);
@@ -151,7 +157,7 @@ function ocrCollectWords(data){
     t:w.text||'', n:ocrNorm(w.text||''),
     x0:w.bbox.x0,x1:w.bbox.x1,y0:w.bbox.y0,y1:w.bbox.y1,
     x:(w.bbox.x0+w.bbox.x1)/2,y:(w.bbox.y0+w.bbox.y1)/2,
-  })).filter(w=>w.n);
+  })).filter(w=>w.n&&(w.confidence===undefined||w.confidence>=30)); // bỏ từ rác tin cậy thấp
 }
 function ocrGroupLines(words){
   const sorted=[...words].sort((a,b)=>a.y-b.y);
@@ -326,24 +332,44 @@ async function ocrRun(file){
     ocrProgress(0.05);
     await loadTesseract();
     ocrSetStatus('Đang xử lý ảnh…');
-    const image=await ocrPreprocess(file);
-    ocrProgress(0.15);
+    const pre=await ocrPreprocess(file);
+    ocrProgress(0.12);
     const worker=await Tesseract.createWorker('vie',1,{
       logger:m=>{
-        if(m.status==='recognizing text')ocrProgress(0.2+m.progress*0.75);
-        else if(m.status&&m.progress)ocrProgress(Math.min(0.2,m.progress*0.15));
+        if(m.status==='recognizing text')ocrProgress(0.12+m.progress*0.22);
+        else if(m.status&&m.progress)ocrProgress(Math.min(0.12,m.progress*0.1));
       },
     });
+    await worker.setParameters({preserve_interword_spaces:'1'});
     ocrSetStatus('Đang đọc chữ…');
-    const {data}=await worker.recognize(image,{}, {text:true,blocks:true});
-    await worker.terminate();
-    ocrProgress(null);
+    const {data}=await worker.recognize(pre.url,{}, {text:true,blocks:true});
     const words=ocrCollectWords(data);
-    if(words.length<6){ocrSetStatus('Không đọc được đủ chữ từ ảnh — thử ảnh sáng, rõ hơn nhé.');return}
+    if(words.length<6){await worker.terminate();ocrSetStatus('Không đọc được đủ chữ từ ảnh — thử ảnh sáng, rõ hơn nhé.');return}
     const lines=ocrGroupLines(words);
     const det=ocrDetect(lines);
     window.__ocrDebug={words,lines,det}; // phục vụ gỡ lỗi
-    const grid=ocrBuildGrid(words,det);
+    let grid=ocrBuildGrid(words,det);
+    /* LƯỢT 2 — đọc kỹ TỪNG Ô: khi đã dò được khung bảng, cắt từng ô từ ảnh
+       đã làm sạch và OCR riêng (PSM 6) → chính xác hơn hẳn so với ghép từ */
+    if(grid&&((det.dayCols&&det.periodRows)||(det.dayRows&&det.periodCols))){
+      const ranges=ocrCellRanges(det);
+      if(ranges){
+        await worker.setParameters({tessedit_pageseg_mode:'6'}); // khối chữ 1–2 dòng
+        const jobs=[];
+        ranges.cols.forEach(c=>ranges.rows.forEach(r=>jobs.push({c,r})));
+        let done=0;
+        for(const job of jobs){
+          const text=await ocrCellText(pre.canvas,job.c,job.r,worker);
+          grid[job.c.day]=grid[job.c.day]||{};
+          grid[job.c.day][job.r.p]=ocrSubject(text);
+          done++;
+          ocrSetStatus('Đọc kỹ từng ô… ('+done+'/'+jobs.length+')');
+          ocrProgress(0.34+0.6*(done/jobs.length));
+        }
+      }
+    }
+    await worker.terminate();
+    ocrProgress(null);
     if(!grid){ocrSetStatus('Không nhận ra cấu trúc bảng (thiếu tiêu đề Thứ/Tiết) — điền tay giúp web nhé, hoặc chụp ảnh thẳng hơn.');return}
     const filled=OCR_DAYS.reduce((a,d)=>a+Object.keys(grid[d]||{}).filter(p=>grid[d][p]).length,0);
     if(!filled){ocrSetStatus('Đọc được chữ nhưng không khớp ô nào — thử chụp ảnh thẳng, đủ khung bảng.');return}
@@ -355,6 +381,58 @@ async function ocrRun(file){
   }finally{
     btn.disabled=false;
   }
+}
+
+/* biên độ từng cột/hàng (từ tâm các nhãn, chia đôi khoảng cách) */
+function ocrCellRanges(det){
+  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+  let cols,rows;
+  if(det.dayCols&&det.periodRows){
+    const cs=[...det.dayCols].sort((a,b)=>a.x-b.x);
+    const rs=[...det.periodRows].sort((a,b)=>a.y-b.y);
+    const cw=cs.length>1?(cs[cs.length-1].x-cs[0].x)/(cs.length-1):160;
+    const rh=rs.length>1?(rs[rs.length-1].y-rs[0].y)/(rs.length-1):90;
+    cols=cs.map(c=>({day:c.day,x0:c.x-cw/2,x1:c.x+cw/2}));
+    rows=rs.map(r=>({p:r.p,y0:r.y-rh*0.62,y1:r.y+rh*0.62}));
+  }else if(det.dayRows&&det.periodCols){
+    const rs=[...det.dayRows].sort((a,b)=>a.y-b.y);
+    const cs=[...det.periodCols].sort((a,b)=>a.x-b.x);
+    const rh=rs.length>1?(rs[rs.length-1].y-rs[0].y)/(rs.length-1):90;
+    const cw=cs.length>1?(cs[cs.length-1].x-cs[0].x)/(cs.length-1):160;
+    rows=rs.map(r=>({day:r.day,y0:r.y-rh*0.62,y1:r.y+rh*0.62}));
+    cols=cs.map(c=>({p:c.p,x0:c.x-cw*0.62,x1:c.x+cw*0.62}));
+  }else return null;
+  cols.forEach(c=>{c.x0=Math.max(0,Math.round(c.x0-6));c.x1=Math.round(c.x1+6)});
+  rows.forEach(r=>{r.y0=Math.max(0,Math.round(r.y0-4));r.y1=Math.round(r.y1+4)});
+  return {cols,rows};
+}
+
+/* cắt 1 ô từ ảnh đã làm sạch — xóa đường kẻ bảng bằng thuật toán, phóng to ×2, OCR riêng */
+function ocrCellText(canvas,c,r,worker){
+  return new Promise(res=>{
+    const sx=c.x0,sy=r.y0,sw=Math.max(10,c.x1-c.x0),sh=Math.max(10,r.y1-r.y0);
+    const t=document.createElement('canvas');
+    t.width=sw*2;t.height=sh*2;
+    const tc=t.getContext('2d');
+    tc.imageSmoothingEnabled=false;
+    tc.fillStyle='#fff';tc.fillRect(0,0,t.width,t.height);
+    tc.drawImage(canvas,sx,sy,sw,sh,0,0,t.width,t.height);
+    const id=tc.getImageData(0,0,t.width,t.height),px=id.data,W=t.width,H=t.height;
+    /* hàng ngang có quá nhiều điểm tối = đường kẻ → tô trắng (chữ chỉ chiếm ~vài chục %) */
+    for(let y=0;y<H;y++){
+      let dk=0;for(let x=0;x<W;x++)if(px[(y*W+x)*4]<128)dk++;
+      if(dk>W*0.62)for(let x=0;x<W;x++){const i=(y*W+x)*4;px[i]=px[i+1]=px[i+2]=255}
+    }
+    /* đường kẻ dọc tương tự */
+    for(let x=0;x<W;x++){
+      let dk=0;for(let y=0;y<H;y++)if(px[(y*W+x)*4]<128)dk++;
+      if(dk>H*0.62)for(let y=0;y<H;y++){const i=(y*W+x)*4;px[i]=px[i+1]=px[i+2]=255}
+    }
+    tc.putImageData(id,0,0);
+    worker.recognize(t,{}, {text:true})
+      .then(({data})=>res(String(data.text||'').replace(/\s+/g,' ').trim()))
+      .catch(()=>res(''));
+  });
 }
 
 /* ---- nối sự kiện ---- */
