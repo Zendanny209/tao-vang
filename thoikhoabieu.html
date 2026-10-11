@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
@@ -105,6 +105,27 @@
         <button class="pill" id="btnAddSchool" type="button">Thêm tiết buổi sáng</button>
       </div>
       <ul class="classlist glass reveal" id="schoolList"></ul>
+    </div>
+
+    <!-- ===== Nhập nhanh từ ảnh thời khóa biểu (OCR ngay trong trình duyệt) ===== -->
+    <div class="glass panel ocr reveal" id="ocrPanel">
+      <h3 class="ocr__title">Nhập nhanh từ <em class="script">ảnh thời khóa biểu</em></h3>
+      <p class="fineprint" style="margin-top:0">Lịch sáng thay đổi hằng tuần? Chọn ảnh chụp/chụp màn hình TKB của trường — web tự đọc và điền vào 5 tiết mỗi sáng với giờ cố định:
+      tiết 1 <b>7:00–7:45</b> → nghỉ 10’ → tiết 2 <b>7:55–8:40</b> → nghỉ 5’ → tiết 3 <b>8:45–9:30</b> → nghỉ 5’ → tiết 4 <b>9:35–10:20</b> → nghỉ 5’ → tiết 5 <b>10:25–11:10</b> (ra về).
+      Sau khi đọc xong, bạn rà lại từng ô rồi mới bấm áp dụng. (Lần đầu cần mạng để tải bộ đọc chữ tiếng Việt.)</p>
+      <div class="ocr__actions">
+        <button class="pill" id="btnOcrPick" type="button">Chọn ảnh thời khóa biểu</button>
+        <input type="file" id="ocrFile" accept="image/*" hidden>
+        <span class="ocr__status" id="ocrStatus"></span>
+      </div>
+      <div class="ocr__progress" id="ocrProgress" hidden><i></i></div>
+      <div class="ocr__scroll" id="ocrPreview" hidden>
+        <table class="ocr__grid" id="ocrGrid"></table>
+        <div class="modal__btns" style="justify-content:flex-start;margin-top:16px">
+          <button class="pill" id="btnOcrApply" type="button">Điền vào lịch buổi sáng</button>
+          <button class="pill pill--ghost" id="btnOcrCancel" type="button">Bỏ</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -260,5 +281,6 @@
 
 <script src="script.js?v=5" defer></script>
 <script src="lich.js?v=5" defer></script>
+<script src="ocr.js?v=1" defer></script>
 </body>
 </html>
