@@ -25,17 +25,18 @@ const ocrNorm=s=>deacc(s).toLowerCase().replace(/[^a-z0-9:]/g,'');
 
 /* tên môn chuẩn hóa: gốc không dấu không khoảng trắng → tên hiển thị */
 const OCR_SUBJECTS={
-  toan:'Toán', van:'Ngữ văn', nguvan:'Ngữ văn', vanhoc:'Ngữ văn',
+  toan:'Toán', van:'Ngữ văn', nguvan:'Ngữ văn', vanhoc:'Văn học',
   ly:'Vật lý', vatly:'Vật lý', lylythuyet:'Vật lý',
   hoa:'Hóa học', hoahoc:'Hóa học',
-  anh:'Tiếng Anh', tienganh:'Tiếng Anh',
+  anh:'Tiếng Anh', tienganh:'Tiếng Anh', ngoaingu:'Ngoại ngữ',
   su:'Lịch sử', lichsu:'Lịch sử',
-  dia:'Địa lí', diali:'Địa lí', dialy:'Địa lí',
+  dia:'Địa lí', diali:'Địa lí', dialy:'Địa lí', dulich:'Du lịch',
   sinh:'Sinh học', sinhhoc:'Sinh học',
-  gdcd:'GDCD', gdtc:'GDTC', congdan:'GDCD',
+  gdcd:'GDCD', gdtc:'GDTC', congdan:'GDCD', gdqp:'GDQP',
   tin:'Tin học', tinhoc:'Tin học', congnghe:'Công nghệ', cn:'Công nghệ',
   theduc:'Thể dục', thduc:'Thể dục', nhac:'Âm nhạc', amnhac:'Âm nhạc', mythuat:'Mĩ thuật', mt:'Mĩ thuật',
-  hodat:'Hoạt động trải nghiệm', hdtm:'Hoạt động trải nghiệm', trghiem:'Hoạt động trải nghiệm',
+  chaoco:'Chào cờ', saolop:'Sinh hoạt lớp',
+  hodat:'Hoạt động trải nghiệm', hdtm:'Hoạt động trải nghiệm', trghiem:'Trải nghiệm', trainghiem:'Trải nghiệm', hndhn:'Trải nghiệm — hướng nghiệp',
   shgd:'Giáo dục kinh tế & pháp luật', gdktepl:'Giáo dục kinh tế & pháp luật', kinhtephapluat:'Giáo dục kinh tế & pháp luật',
 };
 function ocrSubject(raw){
@@ -47,7 +48,7 @@ function ocrSubject(raw){
   for(const k of keys){
     if(k.length>=3&&n.startsWith(k))return OCR_SUBJECTS[k];
   }
-  return raw.trim().replace(/\s+/g,' ').replace(/^./,c=>c.toUpperCase());
+  return raw.trim().replace(/[_]+/g,' ').replace(/\s+/g,' ').replace(/^./,c=>c.toUpperCase());
 }
 
 /* nhận diện một từ có phải tên thứ không (kể cả "Thứ"+"2" tách 2 từ) */
@@ -123,6 +124,17 @@ function ocrPreprocess(file){
         px[i*4]=px[i*4+1]=px[i*4+2]=v;
       }
       ctx.putImageData(d,0,0);
+      /* dải header màu (thường trên TKB: chữ TRẮNG trên nền CYAN) sau nhị phân thành
+         băng TỐI — lật từng dòng đang tối thành sáng để chữ đen trên trắng, OCR đọc được */
+      const W=c.width,H=c.height;
+      for(let y=0;y<H;y++){
+        let dark=0;
+        for(let x=0;x<W;x++)if(px[(y*W+x)*4]===0)dark++;
+        if(dark>W*0.55){
+          for(let x=0;x<W;x++){const i=(y*W+x)*4;px[i]=255-px[i];px[i+1]=255-px[i+1];px[i+2]=255-px[i+2]}
+        }
+      }
+      ctx.putImageData(d,0,0);
       res(c.toDataURL('image/png'));
     };
     img.onerror=()=>rej(new Error('Không đọc được file ảnh.'));
@@ -171,14 +183,19 @@ function ocrScanLine(line){
       out.push({type:'period',p:+nxt.n,x:(w.x+nxt.x)/2,y:w.y,words:[w,nxt]});
       i++;continue;
     }
+    /* TKB kiểu cột số: ô trái chỉ ghi 1..5 (không chữ "Tiết") */
+    if(/^[1-5]$/.test(w.n)){out.push({type:'period',p:+w.n,x:w.x,y:w.y,words:[w]});continue;}
   }
   return out;
 }
 
 /* ---- dò cấu trúc bảng ---- */
 function ocrDetect(lines){
-  const dayTokens=[],periodTokens=[];
-  lines.forEach((L,li)=>ocrScanLine(L).forEach(t=>{t.line=li;dayTokens.push(t);periodTokens.push(t)}));
+  const dayTokens=[],periodTokens=[],consumed=new Set();
+  lines.forEach((L,li)=>ocrScanLine(L).forEach(t=>{
+    t.line=li;t.words.forEach(w=>consumed.add(w));
+    dayTokens.push(t);periodTokens.push(t);
+  }));
   const days=dayTokens.filter(t=>t.type==='day');
   const periods=periodTokens.filter(t=>t.type==='period');
 
@@ -204,19 +221,16 @@ function ocrDetect(lines){
     if(spread(periods,'y')>spread(periods,'x'))periodRows=periods.map(t=>({p:t.p,y:t.y}));
     else periodCols=periods.map(t=>({p:t.p,x:t.x}));
   }
-  return {dayCols,dayRows,periodRows,periodCols,headerY,headerX};
+  return {dayCols,dayRows,periodRows,periodCols,headerY,headerX,consumed};
 }
 
 /* ---- gán chữ còn lại vào ô (ngày, tiết) ---- */
 function ocrBuildGrid(words,det){
   const grid={};
   OCR_DAYS.forEach(d=>grid[d]={});
-  const isLabel=w=>{
-    if(ocrPeriodOf(w.n)||w.n==='tiet')return true;               // nhãn "Tiết n"
-    if(OCR_START_TO_PERIOD[w.n]!==undefined)return true;          // nhãn giờ
-    if(det.headerY!==null&&det.headerY!==undefined&&Math.abs(w.y-det.headerY)<32)return true; // dòng tiêu đề thứ
-    return false;
-  };
+  const isLabel=w=>det.consumed.has(w)||                                   // từ nhãn đã quét
+    ocrPeriodOf(w.n)||w.n==='tiet'||OCR_START_TO_PERIOD[w.n]!==undefined|| // nhãn "Tiết n" / giờ
+    (det.headerY!==null&&det.headerY!==undefined&&Math.abs(w.y-det.headerY)<32); // dòng tiêu đề thứ
   const body=words.filter(w=>w.n&&!isLabel(w));
 
   if(det.dayCols&&det.periodRows){
