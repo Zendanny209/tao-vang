@@ -234,6 +234,34 @@ h1 .script,h2 .script{font-size:1.05em}
   font-size:12.5px;color:var(--ink-soft);white-space:nowrap;margin-right:6px;
   font-variant-numeric:tabular-nums;
 }
+/* tiết buổi sáng — sửa trực tiếp trên ô lịch */
+.sevt{
+  display:grid;grid-template-columns:auto 1fr auto;gap:4px 7px;align-items:center;
+  padding:7px 0;border-top:1px dashed rgba(28,26,23,.14);
+  font:13.5px var(--sans);
+}
+.sevt:first-of-type{border-top:0;padding-top:0;margin-top:2px}
+.sevt i{width:8px;height:8px;border-radius:50%;background:var(--ink)}
+.sevt .evt__t{font-size:12.5px}
+.sevt__in{
+  grid-column:1/-1;min-width:0;border:0;border-bottom:1px solid rgba(28,26,23,.18);
+  background:transparent;
+  font:13.5px var(--sans);color:var(--ink);padding:3px 4px;border-radius:6px 6px 0 0;
+}
+.sevt__in:focus{background:var(--gold-soft);outline:none;border-bottom-color:var(--gold)}
+.sevt__x{
+  grid-column:3;grid-row:1;
+  border:0;background:none;color:var(--ink-soft);cursor:pointer;
+  font:12px/1 var(--sans);padding:2px 3px;
+}
+.sevt__x:hover{color:#9c3d2e}
+.day__add{
+  margin-top:9px;width:27px;height:27px;border-radius:50%;
+  border:1.5px dashed rgba(28,26,23,.35);background:none;
+  color:var(--ink-soft);cursor:pointer;font:14px/1 var(--sans);
+  transition:border-color .25s,color .25s;
+}
+.day__add:hover{border-color:var(--gold);color:var(--gold)}
 
 /* ---------- 9. Danh sách editorial ---------- */
 .split{
@@ -378,47 +406,30 @@ fieldset legend{
   gap:clamp(24px,5vw,56px);align-items:center;
   color:var(--ivory);
 }
-.garden{
-  position:relative;width:300px;height:300px;flex:none;margin:0 auto;
-  border-radius:50%;overflow:hidden;
-  background:radial-gradient(circle at 50% 18%, #1e1911 0%, #13100a 62%, #0c0a07 100%);
-  border:1.5px solid rgba(250,248,244,.16);
-  box-shadow:inset 0 0 46px rgba(0,0,0,.55), 0 0 0 7px rgba(250,248,244,.04);
+.garden{display:none} /* đã bỏ hiệu ứng vòm/nước — giữ tương thích CSS cũ */
+.pomo__clock{text-align:center}
+.pomo__clock b{
+  display:block;font:500 clamp(56px,7vw,84px)/1 var(--serif);color:var(--ivory);
+  font-variant-numeric:tabular-nums;
 }
-.garden__stars{position:absolute;inset:0;width:100%;height:100%}
-.garden.breathing{animation:breathe 4.5s ease-in-out infinite}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
-.star{animation:tw 3.4s ease-in-out infinite}
-/* mặt nước dâng: càng gần hết giờ càng cao; đỉnh là hai lớp sóng xoay chậm */
-.water{
-  position:absolute;left:-12%;right:-12%;bottom:0;height:0%;
-  background:linear-gradient(180deg, rgba(238,205,118,.30) 0%, rgba(201,162,39,.52) 55%, rgba(160,124,26,.66) 100%);
-  box-shadow:0 -8px 30px rgba(233,196,106,.28);
-  transition:height .6s ease;
+.pomo__clock span{
+  display:block;margin-top:12px;font:12px var(--sans);color:#cbb87f;
+  letter-spacing:.24em;text-transform:uppercase;
 }
-.garden.full .water{box-shadow:0 -8px 42px rgba(238,205,118,.5)}
-.water__wave{
-  position:absolute;top:-8px;left:-60%;width:220%;height:16px;border-radius:42%;
-  background:rgba(240,214,140,.38);animation:waveSpin 5.5s linear infinite;
-}
-.water__wave--2{top:-6px;background:rgba(240,214,140,.22);animation-duration:8.5s;animation-direction:reverse}
-@keyframes waveSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.petal-fall{display:none} /* đã bỏ hiệu ứng hoa — giữ lớp tương thích cũ */
-.pomo__time{
-  position:absolute;inset:0;display:grid;place-content:center;text-align:center;
-  pointer-events:none;
-}
-.pomo__time b{
-  font:500 50px/1 var(--serif);color:var(--ivory);
-  font-variant-numeric:tabular-nums;text-shadow:0 2px 18px rgba(0,0,0,.65);
-}
-/* danh sách nhạc YouTube */
+.pomo__time{display:none} /* kiểu cũ — không dùng */
+@media (max-width:640px){.pomo__clock b{font-size:56px}}
+/* danh sách nhạc YouTube — link trên, video trái, danh sách phải */
 .yt{margin-top:26px}
 .yt__form{display:flex;gap:10px;margin-top:14px}
 .yt__form input{flex:1;min-width:0}
-.yt__frame{margin-top:16px;border-radius:16px;overflow:hidden;background:#000}
-.yt__frame iframe{display:block;width:100%;height:280px;border:0}
-.yt__list{margin-top:8px}
+.yt__layout{
+  display:grid;grid-template-columns:minmax(0,1.65fr) minmax(230px,1fr);
+  gap:20px;align-items:start;margin-top:16px;
+}
+.yt__player{background:#000;border-radius:14px;overflow:hidden}
+.yt__player iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+.yt__player[hidden]{display:none}
+.yt__list{margin:0}
 .night h3{font:500 24px var(--serif);margin:0 0 6px}
 .night .fineprint{color:rgba(250,248,244,.62)}
 .night .field{max-width:240px;margin:0 0 18px}
@@ -586,7 +597,6 @@ input[type=text],input[type=time],input[type=number],input[type=password],select
   .night{grid-template-columns:1fr;text-align:center}
   .night .field{margin-left:auto;margin-right:auto}
   .night .pomo__btns{justify-content:center}
-  .garden{width:250px;height:250px}
   .footer{padding-top:78px}
   .footer__meta{justify-content:center;text-align:center}
 }
@@ -599,10 +609,9 @@ input[type=text],input[type=time],input[type=number],input[type=password],select
   html{scroll-behavior:auto}
   .hero__text>*,.hero__side,.hero__cta{animation:none!important}
   .js .reveal{opacity:1!important;translate:0 0!important;transition:none!important}
-  .sky::before,.star,.garden.breathing,.clouds,.water__wave{animation:none!important}
+  .sky::before,.clouds{animation:none!important}
   .page-anim body{animation:none!important}
   .page-anim.page-leaving body{opacity:1;translate:0;transition:none}
-  .water{transition:none}
   .pill,.day,.note,.toast,.toc__card{transition:none}
   .day:hover,.pill:hover,.toc__card:hover{translate:0;transform:none}
 }
