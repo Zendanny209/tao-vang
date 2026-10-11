@@ -1,87 +1,42 @@
 /* =========================================================
-   TÁO VÀNG — pomodoro.js
-   Hoa thuỷ tinh nở dần theo tiến độ phiên tập trung:
-   p = 0 → chồi khép; p = 1 → nở hoàn chỉnh (đồng hồ về 00:00).
+   TÁO VÀNG — pomodoro.js v5
+   Nước dâng theo tiến độ phiên tập trung:
+   p = 0 → vòm trống; p → 1 nước dâng gần đầy ô; về 00:00 nước ngập tròn.
+   Đặt lại → nước rút xuống (animation). Kèm danh sách nhạc YouTube riêng.
    ========================================================= */
 'use strict';
 
 const SVGNS='http://www.w3.org/2000/svg';
 
-/* ---------- dựng hoa 3 vòng cánh + sao đêm ---------- */
-const RINGS=[
-  {n:5,len:52, w:26,k0:0,  k1:.18,grad:'petInner',vein:'rgba(150,110,50,.5)'},
-  {n:7,len:80, w:38,k0:.18,k1:.45,grad:'petMid',  vein:'rgba(90,110,150,.45)'},
-  {n:9,len:112,w:52,k0:.4, k1:.88,grad:'petOuter',vein:'rgba(70,95,140,.5)'},
-];
-const petals=[];
-function petalPath(len,w){
-  return `M0 8 C ${-w/2} -${(len*.32).toFixed(1)}, ${(-w*.34).toFixed(1)} -${(len*.8).toFixed(1)}, 0 -${len} `
-       + `C ${(w*.34).toFixed(1)} -${(len*.8).toFixed(1)}, ${(w/2).toFixed(1)} -${(len*.32).toFixed(1)}, 0 8 Z`;
-}
-function buildFlower(){
-  const host=$('petals');
-  RINGS.forEach((r,ri)=>{
-    const off=360/(2*r.n)*(ri%2?1:-1);
-    for(let i=0;i<r.n;i++){
-      const g=document.createElementNS(SVGNS,'g');
-      const p=document.createElementNS(SVGNS,'path');
-      p.setAttribute('d',petalPath(r.len,r.w));
-      p.setAttribute('fill',`url(#${r.grad})`);
-      p.setAttribute('stroke','rgba(255,255,255,.5)');
-      p.setAttribute('stroke-width','1');
-      g.appendChild(p);
-      /* gân cánh hoa */
-      const vg=document.createElementNS(SVGNS,'g');
-      vg.setAttribute('stroke',r.vein);
-      vg.setAttribute('stroke-width','.9');
-      vg.setAttribute('fill','none');
-      vg.setAttribute('opacity','.8');
-      const mk=d=>{const v=document.createElementNS(SVGNS,'path');v.setAttribute('d',d);vg.appendChild(v)};
-      mk(`M0 -2 L 0 -${(r.len*.82).toFixed(1)}`);
-      [.3,.52,.72].forEach(f=>{
-        const y=(r.len*f).toFixed(1), y2=(r.len*(f+.1)).toFixed(1);
-        mk(`M0 -${y} C ${(r.w*.14).toFixed(1)} -${y2}, ${(r.w*.22).toFixed(1)} -${(r.len*(f+.16)).toFixed(1)}, ${(r.w*.3).toFixed(1)} -${(r.len*(f+.2)).toFixed(1)}`);
-        mk(`M0 -${y} C -${(r.w*.14).toFixed(1)} -${y2}, -${(r.w*.22).toFixed(1)} -${(r.len*(f+.16)).toFixed(1)}, -${(r.w*.3).toFixed(1)} -${(r.len*(f+.2)).toFixed(1)}`);
-      });
-      g.appendChild(vg);
-      host.appendChild(g);
-      petals.push({
-        g,
-        base:i*360/r.n+off,
-        jit:(i*53%9-4),
-        k:r.k0+(r.k1-r.k0)*(i/r.n),
-      });
-      g.setAttribute('transform','rotate(0) scale(.28)');
-      g.setAttribute('opacity','.3');
-    }
-  });
-  /* sao đêm */
+/* ---------- sao đêm (nền vòm) ---------- */
+function buildStars(){
   const stars=$('stars');
-  const starCols=['#f4e6c0','#cfdcec','#e8d9a8'];
+  const cols=['#f4e6c0','#cfdcec','#e8d9a8'];
   for(let i=0;i<46;i++){
     let x,y,tries=0;
     do{x=Math.random()*300;y=Math.random()*300;tries++}
-    while(Math.hypot(x-150,y-150)<88&&tries<20);
+    while(Math.hypot(x-150,y-150)<92&&tries<20);
     const c=document.createElementNS(SVGNS,'circle');
     c.setAttribute('cx',x.toFixed(1));c.setAttribute('cy',y.toFixed(1));
     c.setAttribute('r',(.6+Math.random()*1.1).toFixed(2));
-    c.setAttribute('fill',starCols[i%3]);
+    c.setAttribute('fill',cols[i%3]);
     c.setAttribute('opacity',(.18+Math.random()*.5).toFixed(2));
     c.setAttribute('class','star');
     c.style.animationDelay=(Math.random()*3.4).toFixed(2)+'s';
     stars.appendChild(c);
   }
 }
-function bloom(p){
+
+/* ---------- nước dâng ---------- */
+function setWater(p,drainMs){
+  const w=$('water');
+  if(!w)return;
   p=Math.max(0,Math.min(1,p));
-  for(const pt of petals){
-    const local=Math.max(0,Math.min(1,(p-pt.k)/((1-pt.k)||1)));
-    const e=1-Math.pow(1-local,3);
-    pt.g.setAttribute('transform',`rotate(${(pt.base*e+pt.jit*e).toFixed(2)}) scale(${(.38+.62*e).toFixed(3)})`);
-    pt.g.setAttribute('opacity',(.45+.55*e).toFixed(3));
-  }
-  $('coreGlow').setAttribute('opacity',(.25+.75*p).toFixed(3));
+  w.style.transition=drainMs?`height ${drainMs}ms ease`:'';
+  w.style.height=(p*100).toFixed(1)+'%';
+  $('garden').classList.toggle('full',p>=0.999);
 }
+const waterP=()=>st.phase==='work'?1-st.left/phaseSec('work'):1;
 
 /* ---------- đồng hồ ---------- */
 let st={phase:'work',left:cfg.pomo.work*60,round:0,running:false,started:false,timer:null};
@@ -104,7 +59,6 @@ function beep(){
   });
 }
 const phaseSec=ph=>(ph==='work'?cfg.pomo.work:ph==='short'?cfg.pomo.short:cfg.pomo.long)*60;
-const bloomP=()=>st.phase==='work'?1-st.left/phaseSec('work'):1;
 
 function pomoTick(){
   st.left--;
@@ -114,36 +68,18 @@ function pomoTick(){
       const long=st.round%cfg.pomo.rounds===0;
       st.phase=long?'long':'short';
       st.left=phaseSec(st.phase);
-      spawnPetals(8);
-      beep();toast(long?`Xong ${cfg.pomo.rounds} vòng — nghỉ dài ${cfg.pomo.long} phút nhé.`:`Xong một phiên — nghỉ ${cfg.pomo.short} phút nhé.`);
+      beep();toast(long?`Xong ${cfg.pomo.rounds} vòng — nước dâng đầy, nghỉ dài ${cfg.pomo.long} phút nhé.`:`Xong một phiên — nước ngập tròn, nghỉ ${cfg.pomo.short} phút nhé.`);
     }else{
       st.phase='work';st.left=phaseSec('work');
-      beep();toast('Nghỉ xong — quay lại '+cfg.pomo.subject+' thôi, hoa lại bắt đầu nở.');
+      beep();toast('Nghỉ xong — quay lại '+cfg.pomo.subject+' thôi, nước bắt đầu dâng lại.');
     }
   }
   renderPomo();
 }
-
-/* vài cánh hoa rơi nhẹ khi kết thúc phiên tập trung */
-function spawnPetals(n){
-  if(REDUCED)return;
-  const garden=$('garden');
-  for(let i=0;i<n;i++){
-    const p=document.createElement('i');
-    p.className='petal-fall';
-    p.style.left=(8+Math.random()*84)+'%';
-    p.style.setProperty('--dx',(Math.random()*90-45).toFixed(0)+'px');
-    p.style.animationDuration=(3.4+Math.random()*2.8).toFixed(2)+'s';
-    p.style.animationDelay=(Math.random()*1.4).toFixed(2)+'s';
-    p.style.transform='scale('+(0.7+Math.random()*0.7).toFixed(2)+')';
-    garden.appendChild(p);
-    setTimeout(()=>p.remove(),8200);
-  }
-}
 function renderPomo(){
   const mm=String(st.left/60|0).padStart(2,'0'),ss=String(st.left%60).padStart(2,'0');
   $('pomoTime').textContent=mm+':'+ss;
-  bloom(bloomP());
+  setWater(waterP());
   const ph={work:'Tập trung',short:'Nghỉ ngắn',long:'Nghỉ dài'}[st.phase];
   $('pomoInfo').textContent=`${ph} · đã xong ${st.round} vòng · nghỉ dài ${cfg.pomo.long} phút sau ${cfg.pomo.rounds} vòng · môn ${cfg.pomo.subject}`;
 }
@@ -159,7 +95,9 @@ $('btnResetPomo').onclick=()=>{
   st.running=false;clearInterval(st.timer);
   st.phase='work';st.left=phaseSec('work');st.round=0;st.started=false;
   $('garden').classList.remove('breathing');
-  $('btnStart').textContent='Bắt đầu';renderPomo();
+  $('btnStart').textContent='Bắt đầu';
+  renderPomo();
+  setWater(0,1200); // nước rút xuống
 };
 
 /* môn + thiết lập thời gian */
@@ -188,8 +126,96 @@ function fillPomoSettings(){
   });
 });
 
+/* ---------------- DANH SÁCH NHẠC YOUTUBE ----------------
+   Lưu trong cfg.pomo.yt: {kind:'video'|'list', id, title}
+   Phát qua iframe embed: video đơn hoặc chuỗi playlist. */
+function ytParse(url){
+  const s=String(url).trim();
+  let m=s.match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{11})/);
+  if(m)return {kind:'video',id:m[1]};
+  m=s.match(/[?&]list=([\w-]+)/);
+  if(m)return {kind:'list',id:m[1]};
+  return null;
+}
+function ytEmbed(item,rest){ // rest: các id video còn lại để nối thành playlist
+  if(item.kind==='list')
+    return `https://www.youtube.com/embed/videoseries?list=${item.id}&autoplay=1&rel=0`;
+  const tail=rest.length?`&playlist=${rest.join(',')}`:'';
+  return `https://www.youtube.com/embed/${item.id}?autoplay=1&rel=0${tail}`;
+}
+function ytStop(){
+  $('ytPlayer').src='';
+  $('ytFrameWrap').hidden=true;
+}
+function ytPlayAt(i){
+  const list=cfg.pomo.yt||[];
+  const item=list[i];if(!item)return;
+  if(item.kind==='video'){
+    const rest=list.filter((x,j)=>j!==i&&x.kind==='video').map(x=>x.id);
+    $('ytPlayer').src=ytEmbed(item,rest);
+  }else{
+    $('ytPlayer').src=ytEmbed(item,[]);
+  }
+  $('ytFrameWrap').hidden=false;
+  toast('Đang phát — vừa học vừa nghe nhé.');
+}
+function ytTitle(item){
+  /* thử lấy tên qua oEmbed (nếu không được thì dùng ID) */
+  const url=item.kind==='video'
+    ?`https://www.youtube.com/watch?v=${item.id}`
+    :`https://www.youtube.com/playlist?list=${item.id}`;
+  fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent(url))
+    .then(r=>r.ok?r.json():null)
+    .then(j=>{
+      if(!j||!j.title)return;
+      item.title=j.title;
+      saveState();renderYt();
+    }).catch(()=>{});
+}
+function renderYt(){
+  const list=cfg.pomo.yt||[];
+  const box=$('ytList');
+  if(!list.length){
+    box.innerHTML='<li class="xrow xrow--empty">Chưa có link nào — dán link đầu tiên lên trên nhé.</li>';
+    return;
+  }
+  box.innerHTML=list.map((x,i)=>`<li class="xrow">
+    <span class="chip ${x.kind==='list'?'chip--extra':'chip--self'}">${x.kind==='list'?'playlist':'video'}</span>
+    <b class="xrow__subj">${esc(x.title||x.id)}</b>
+    <span class="xrow__acts">
+      <button class="linklike" data-yt="play" data-i="${i}" type="button">Phát</button>
+      <button class="linklike" data-yt="del" data-i="${i}" type="button">Xóa</button>
+    </span>
+  </li>`).join('');
+}
+$('ytForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const url=$('ytUrl').value.trim();
+  const item=url&&ytParse(url);
+  if(!item){toast('Link YouTube không nhận diện được — kiểm tra lại nhé.');return}
+  cfg.pomo.yt=cfg.pomo.yt||[];
+  item.title=item.id;
+  cfg.pomo.yt.push(item);
+  saveState();renderYt();
+  $('ytUrl').value='';
+  ytTitle(item); // lấy tên thật bất đồng bộ
+  toast('Đã thêm vào danh sách nhạc.');
+});
+$('ytList').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-yt]');if(!b)return;
+  const i=+b.dataset.i;
+  if(b.dataset.yt==='play')ytPlayAt(i);
+  else{
+    if(!$('ytFrameWrap').hidden)ytStop();
+    cfg.pomo.yt.splice(i,1);saveState();renderYt();toast('Đã xóa khỏi danh sách.');
+  }
+});
+$('btnYtStop').onclick=ytStop;
+
 /* INIT */
-buildFlower();
+buildStars();
 renderPomoSubjects();
 fillPomoSettings();
+renderYt();
 renderPomo();
+setWater(0);
